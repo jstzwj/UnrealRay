@@ -1,19 +1,19 @@
 #pragma once
 #ifndef UNREALRAY_RAY
 #define UNREALRAY_RAY
-#include"point.h"
-#include"vector.h"
+#include"Point.h"
+#include"Vector.h"
 namespace unreal
 {
-	class ray
+	class Ray
 	{
 	public:
-		point origin;
-		vector direction;
+		Point origin;
+		Vector direction;
 	public:
-		ray() 
+		Ray() 
 		:origin(),direction(){}
-		ray(const point & in_origin, const vector & in_direction) 
+		Ray(const Point & in_origin, const Vector & in_direction) 
 		:origin(in_origin),direction(in_direction){}
 
 

@@ -33,12 +33,42 @@
     <ClInclude Include="UnrealRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UnrealRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

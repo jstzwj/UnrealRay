@@ -3,43 +3,43 @@
 #define UNREALRAY_POINT
 namespace unreal
 {
-	class point
+	class Point
 	{
 	public:
 		double x, y, z;
 	public:
-		point() 
+		Point() 
 			:x(0.0),y(0.0),z(0.0){}
-		point(double in_x, double in_y, double in_z)
+		Point(double in_x, double in_y, double in_z)
 		:x(in_x),y(in_y),z(in_z){}
 		//Some operators
-		point operator+(double n) { return point(x + n, y + n, z + n); }
-		point operator-(double n) { return point(x - n, y - n, z - n); }
-		point operator*(double n) { return point(x * n, y * n, z * n); }
-		point operator/(double n) { return point(x / n, y / n, z / n); }
+		Point operator+(double n) { return Point(x + n, y + n, z + n); }
+		Point operator-(double n) { return Point(x - n, y - n, z - n); }
+		Point operator*(double n) { return Point(x * n, y * n, z * n); }
+		Point operator/(double n) { return Point(x / n, y / n, z / n); }
 
-		point & operator+=(double n) 
+		Point & operator+=(double n) 
 		{
 			x += n;
 			y += n;
 			z += n;
 			return *this; 
 		}
-		point & operator-=(double n) 
+		Point & operator-=(double n) 
 		{
 			x -= n;
 			y -= n;
 			z -= n;
 			return *this; 
 		}
-		point & operator*=(double n) 
+		Point & operator*=(double n) 
 		{
 			x *= n;
 			y *= n;
 			z *= n;
 			return *this;
 		}
-		point & operator/=(double n) 
+		Point & operator/=(double n) 
 		{
 			x /= n;
 			y /= n;

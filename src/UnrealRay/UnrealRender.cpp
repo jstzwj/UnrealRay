@@ -1,12 +1,15 @@
 #include "UnrealRender.h"
 
 
-
-UnrealRender::UnrealRender()
+namespace unreal
 {
+	UnrealRender::UnrealRender()
+	{
+	}
+
+
+	UnrealRender::~UnrealRender()
+	{
+	}
 }
 
-
-UnrealRender::~UnrealRender()
-{
-}

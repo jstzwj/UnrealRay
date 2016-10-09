@@ -110,15 +110,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="Primitive.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="Sampler.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="UnrealRender.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="UnrealRender.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

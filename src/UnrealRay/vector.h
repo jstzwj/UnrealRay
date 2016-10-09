@@ -5,84 +5,84 @@
 
 namespace unreal
 {
-	class vector
+	class Vector
 	{
 	public:
 		double x, y, z;
 	public:
-		vector()
+		Vector()
 			:x(0.0), y(0.0), z(0.0) {}
-		vector(double in_x, double in_y, double in_z)
+		Vector(double in_x, double in_y, double in_z)
 			:x(in_x), y(in_y), z(in_z) {}
 		//Some operators
-		vector operator + (const vector & rhs)
+		Vector operator + (const Vector & rhs)
 		{
-			return vector(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z);
+			return Vector(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z);
 		}
-		vector operator + (double rhs)
+		Vector operator + (double rhs)
 		{
-			return vector(this->x + rhs, this->y + rhs, this->z + rhs);
+			return Vector(this->x + rhs, this->y + rhs, this->z + rhs);
 		}
-		vector operator - (const vector & rhs)
+		Vector operator - (const Vector & rhs)
 		{
-			return vector(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z);
+			return Vector(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z);
 		}
-		vector operator - (double rhs)
+		Vector operator - (double rhs)
 		{
-			return vector(this->x - rhs, this->y - rhs, this->z - rhs);
+			return Vector(this->x - rhs, this->y - rhs, this->z - rhs);
 		}
-		vector operator * (const vector & rhs)
+		Vector operator * (const Vector & rhs)
 		{
-			return vector(this->x * rhs.x, this->y * rhs.y, this->z * rhs.z);
+			return Vector(this->x * rhs.x, this->y * rhs.y, this->z * rhs.z);
 		}
-		vector operator * (double rhs)
+		Vector operator * (double rhs)
 		{
-			return vector(this->x * rhs, this->y * rhs, this->z * rhs);
+			return Vector(this->x * rhs, this->y * rhs, this->z * rhs);
 		}
-		vector operator / (const vector & rhs)
+		Vector operator / (const Vector & rhs)
 		{
-			return vector(this->x / rhs.x, this->y / rhs.y, this->z / rhs.z);
+			return Vector(this->x / rhs.x, this->y / rhs.y, this->z / rhs.z);
 		}
-		vector operator / (double rhs)
+		Vector operator / (double rhs)
 		{
-			return vector(this->x / rhs, this->y / rhs, this->z / rhs);
+			return Vector(this->x / rhs, this->y / rhs, this->z / rhs);
 		}
-		vector& operator += (const vector & rhs)
+		Vector& operator += (const Vector & rhs)
 		{
 			x += rhs.x;
 			y += rhs.y;
 			z += rhs.z;
 			return *this;
 		}
-		vector& operator += (double rhs)
+		Vector& operator += (double rhs)
 		{
 			x += rhs;
 			y += rhs;
 			z += rhs;
 			return *this;
 		}
-		vector& operator -= (const vector & rhs)
+		Vector& operator -= (const Vector & rhs)
 		{
 			x -= rhs.x;
 			y -= rhs.y;
 			z -= rhs.z;
 			return *this;
 		}
-		vector& operator -= (double rhs)
+		Vector& operator -= (double rhs)
 		{
 			x -= rhs;
 			y -= rhs;
 			z -= rhs;
 			return *this;
 		}
-		vector& operator *= (const vector & rhs)
+		Vector& operator *= (const Vector & rhs)
 		{
 			x *= rhs.x;
 			y *= rhs.y;
 			z *= rhs.z;
 			return *this;
 		}
-		vector& operator *= (double rhs)
+		Vector& operator *= (double rhs)
 		{
 			x *= rhs;
 			y *= rhs;
@@ -90,13 +90,13 @@ namespace unreal
 			return *this;
 		}
 
-		vector operator-()
+		Vector operator-()
 		{
-			return vector(-x, -y, -z);
+			return Vector(-x, -y, -z);
 		}
-		vector operator+()
+		Vector operator+()
 		{
-			return vector(*this);
+			return Vector(*this);
 		}
 		//Some useful functions
 		double sqrLength()
@@ -107,17 +107,17 @@ namespace unreal
 		{
 			return sqrt(x*x + y*y + z*z);
 		}
-		vector normalize()
+		Vector normalize()
 		{
-			return vector(x/length(),y/length(),z/length());
+			return Vector(x/length(),y/length(),z/length());
 		}
-		double dot(const vector &rhs)
+		double dot(const Vector &rhs)
 		{
 			return x*rhs.x + y*rhs.y + z*rhs.z;
 		}
-		vector cross(const vector &rhs)
+		Vector cross(const Vector &rhs)
 		{
-			return vector(-z * rhs.y + y * rhs.z, z * rhs.x - x * rhs.z, -y * rhs.x + x * rhs.y);
+			return Vector(-z * rhs.y + y * rhs.z, z * rhs.x - x * rhs.z, -y * rhs.x + x * rhs.y);
 		}
 	};
 }
