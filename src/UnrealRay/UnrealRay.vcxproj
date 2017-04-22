@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Film.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
