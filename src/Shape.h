@@ -1,6 +1,7 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 #include"Matrix.h"
+#include"Transform.h"
 
 namespace unreal {
     class Shape
@@ -9,10 +10,9 @@ namespace unreal {
         const Transform ObjectToWorld, WorldToObject;
         const bool reverseOrientation, transformSwapsHandedness;
     public:
-        Shape::Shape(const Transform &o2w, bool ro)
-                : ObjectToWorld(o2w), WorldToObject(o2w.GetInverse()),
-                reverseOrientation(ro),
-                transformSwapsHandedness(o2w.SwapsHandedness()) {}
+        Shape(const Transform &o2w, bool ro)
+            : ObjectToWorld(o2w), WorldToObject(o2w.GetInverse()),
+            reverseOrientation(ro),transformSwapsHandedness(o2w.swapsHandedness()) {}
 
     };
 }
