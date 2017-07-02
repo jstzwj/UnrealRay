@@ -13,7 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    UnrealRay/Camera.cpp \
+    UnrealRay/Light.cpp \
+    UnrealRay/main.cpp \
+    UnrealRay/Primitive.cpp \
+    UnrealRay/Sampler.cpp \
+    UnrealRay/Scene.cpp \
+    UnrealRay/UnrealRender.cpp
 
 HEADERS  += mainwindow.h \
     Camera.h \
@@ -27,6 +34,24 @@ HEADERS  += mainwindow.h \
     Film.h \
     Matrix.h \
     Shape.h \
-    Normal.h
+    Normal.h \
+    Transform.h \
+    UnrealRay/Camera.h \
+    UnrealRay/Film.h \
+    UnrealRay/Light.h \
+    UnrealRay/math.h \
+    UnrealRay/matrix.h \
+    UnrealRay/point.h \
+    UnrealRay/Primitive.h \
+    UnrealRay/ray.h \
+    UnrealRay/Sampler.h \
+    UnrealRay/Scene.h \
+    UnrealRay/UnrealRender.h \
+    UnrealRay/vector.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    UnrealRay/UnrealRay.vcxproj \
+    UnrealRay/UnrealRay.vcxproj.filters \
+    UnrealRay.sln

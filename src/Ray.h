@@ -3,6 +3,7 @@
 #define UNREALRAY_RAY
 #include"Point.h"
 #include"Vector.h"
+#include"Point.h"
 #include<limits>
 #include<cmath>
 
@@ -22,6 +23,11 @@ namespace unreal
                 float start = RAY_EPSILON, float end = RAY_INFINITY)
                 : o(origin), d(direction), mint(start), maxt(end){}
 
+        Point operator[](double d)
+        {
+            Vector normal_v=direction.normalize();
+            return Point(d*normal_v.x,d*normal_v.y,d*normal_v.z);
+        }
 
 
 	};
