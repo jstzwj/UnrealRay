@@ -36,7 +36,7 @@ namespace unreal
             return Transform(mInv, m);
         }
 
-        Transform translate(const Vector &delta)
+        static Transform translate(const Vector &delta)
         {
             Matrix4x4 m(1,0,0,delta.x,
                         0,1,0,delta.y,
@@ -48,7 +48,7 @@ namespace unreal
                            0,0,0,   1   );
             return Transform(m, mInv);
         }
-        Transform  scale(double x, double y, double z)
+        static Transform  scale(double x, double y, double z)
         {
             Matrix4x4 m(x, 0, 0, 0,
                         0, y, 0, 0,
@@ -60,7 +60,7 @@ namespace unreal
                            0,     0       ,0     ,1);
                 return Transform(m, mInv);
         }
-        Transform  rotateX(double  angle)
+        static Transform  rotateX(double  angle)
         {
             double sin_t = std::sin(radians(angle));
             double cos_t = std::cos(radians(angle));
@@ -71,7 +71,7 @@ namespace unreal
                         0, 0    , 0     , 1);
             return Transform(m, m.transpose());
         }
-        Transform  rotateY(double  angle)
+        static Transform  rotateY(double  angle)
         {
             double sin_t = std::sin(radians(angle));
             double cos_t = std::cos(radians(angle));
@@ -82,7 +82,7 @@ namespace unreal
                         0    ,0 , 0     , 1);
             return Transform(m, m.transpose());
         }
-        Transform  rotateZ(double  angle)
+        static Transform  rotateZ(double  angle)
         {
             double sin_t = std::sin(radians(angle));
             double cos_t = std::cos(radians(angle));
@@ -93,7 +93,7 @@ namespace unreal
                         0    , 0     ,0  , 1);
             return Transform(m, m.transpose());
         }
-        Transform rotate(double angle, const Vector &axis)
+        static Transform rotate(double angle, const Vector &axis)
         {
                 Vector a = axis.normalize();
                 double s = std::sin(radians(angle));
@@ -121,7 +121,7 @@ namespace unreal
                 Matrix4x4 mat(m);
                 return Transform(mat, mat.transpose());
         }
-        Transform lookAt(const Point &pos, const Point &look, const Vector &up)
+        static Transform lookAt(const Point &pos, const Point &look, const Vector &up)
         {
             double m[4][4];
 
