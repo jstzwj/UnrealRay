@@ -4,6 +4,7 @@
 
 #include<cmath>
 #include<cassert>
+#include"Utility.h"
 #include"Matrix.h"
 #include"Vector.h"
 #include"Point.h"
@@ -12,7 +13,7 @@
 namespace unreal
 {
 
-    const double PI= 3.1415926;
+
     class Transform
     {
     private:
@@ -61,8 +62,8 @@ namespace unreal
         }
         Transform  rotateX(double  angle)
         {
-            double sin_t = std::sin(angle*PI/180);
-            double cos_t = std::cos(angle*PI/180);
+            double sin_t = std::sin(radians(angle));
+            double cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(1, 0    , 0     , 0,
                         0, cos_t, -sin_t, 0,
@@ -72,8 +73,8 @@ namespace unreal
         }
         Transform  rotateY(double  angle)
         {
-            double sin_t = std::sin(angle*PI/180);
-            double cos_t = std::cos(angle*PI/180);
+            double sin_t = std::sin(radians(angle));
+            double cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(cos_t,0 , -sin_t, 0,
                         0    ,1 , 0     , 0,
@@ -83,8 +84,8 @@ namespace unreal
         }
         Transform  rotateZ(double  angle)
         {
-            double sin_t = std::sin(angle*PI/180);
-            double cos_t = std::cos(angle*PI/180);
+            double sin_t = std::sin(radians(angle));
+            double cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(cos_t, -sin_t,0  , 0,
                         sin_t, cos_t ,0  , 0,
@@ -95,8 +96,8 @@ namespace unreal
         Transform rotate(double angle, const Vector &axis)
         {
                 Vector a = axis.normalize();
-                double s = std::sin(angle*PI/180);
-                double c = std::cos(angle*PI/180);
+                double s = std::sin(radians(angle));
+                double c = std::cos(radians(angle));
                 double m[4][4];
                 m[0][0] = a.x * a.x + (1.0 - a.x * a.x) * c;
                 m[0][1] = a.x * a.y + (1.0 - c) - a.z *s;

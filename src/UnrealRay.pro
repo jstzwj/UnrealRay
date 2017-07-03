@@ -47,7 +47,9 @@ HEADERS  += mainwindow.h \
     UnrealRay/Sampler.h \
     UnrealRay/Scene.h \
     UnrealRay/UnrealRender.h \
-    UnrealRay/vector.h
+    UnrealRay/vector.h \
+    Differentialgeometry.h \
+    Utility.h
 
 FORMS    += mainwindow.ui
 
