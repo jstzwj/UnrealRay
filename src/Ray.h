@@ -23,6 +23,12 @@ namespace unreal
                 float start = RAY_EPSILON, float end = RAY_INFINITY)
                 : o(origin), d(direction), mint(start), maxt(end){}
 
+        Point getPoint(double d)
+        {
+            Vector normal_v=direction.normalize();
+            return Point(d*normal_v.x,d*normal_v.y,d*normal_v.z);
+        }
+
         Point operator[](double d)
         {
             Vector normal_v=direction.normalize();

@@ -43,8 +43,8 @@ namespace unreal
         double discrim = B * B - 4.0 * A * C;
         if( discrim < 0 ) return false;
         double rootDiscrim = std::sqrt(discrim);
-        *t0=(-B+rootDiscrim)*0.5/A;
-        *t1=(-B-rootDiscrim)*0.5/A;
+        *t0=(-B-rootDiscrim)*0.5/A;
+        *t1=(-B+rootDiscrim)*0.5/A;
         return true;
     }
 }

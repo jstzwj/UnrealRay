@@ -3,29 +3,34 @@
 #define UNREALRAY_CAMERA
 
 #include"Sampler.h"
-#include"ray.h"
-#include""
-#include"matrix.h"
+#include"Ray.h"
+#include"Transform.h"
+#include"Matrix.h"
+#include"Film.h"
+
 
 namespace unreal
 {
-	class AbstractCamera
-	{
-	public:
-		virtual float GenerateRay(const Sampler &sample, Ray *ray) const = 0;
-	};
 	class Camera
 	{
 	public:
-		Camera();
+        Camera(const Transform &world2cam, double hither, double yon,
+                    double sopen, double sclose, Film * film);
 		~Camera();
-		
+        virtual double GenerateRay(const Sampler &sample, Ray *ray) const = 0;
 	protected:
 		Transform WorldToCamera, CameraToWorld;
-		float ClipHither, ClipYon;   // Hither: 近的； Yon:远的
-		float ShutterOpen, ShutterClose;
-		Film film;
+        double ClipHither, ClipYon;   // Hither: 近的； Yon:远的
+        double ShutterOpen, ShutterClose;
+        Film * film;
 	};
+    class ProjectiveCamera : public Camera
+    {
+        public:
+            //< ProjectiveCamera Public Methods>
+        protected:
+            //< ProjectiveCamera Protected Data>
+    };
 }
 
 
