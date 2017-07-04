@@ -31,7 +31,7 @@ namespace unreal
 
         Transform(const Matrix4x4 &mat,const Matrix4x4 &minv)
             :m(mat),mInv(minv){}
-        Transform GetInverse() const
+        Transform getInverse() const
         {
             return Transform(mInv, m);
         }
