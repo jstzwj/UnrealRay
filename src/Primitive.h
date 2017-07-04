@@ -5,6 +5,7 @@
 
 #include<vector>
 #include<memory>
+#include<stdexcept>
 #include"Ray.h"
 #include"Transform.h"
 #include"Differentialgeometry.h"
@@ -75,8 +76,45 @@ namespace unreal
         //<GeometricPrimitive Private Data>
         std::shared_ptr<Shape> shape;
         std::shared_ptr<Material> material;
-        AreaLight *areaLight;
-    }
+        std::shared_ptr<AreaLight> areaLight;
+    };
+
+    class InstancePrimitive : public Primitive {
+    public:
+        //< InstancePrimitive Public Methods>
+        InstancePrimitive(Primitive &i, const Transform &i2w)
+        {
+            instance = &i;
+            InstanceToWorld = i2w;
+            WorldToInstance = i2w.GetInverse();
+        }
+        virtual bool InstancePrimitive::Intersect(const Ray &r, Intersection *isect) const override
+        {
+                Ray ray = WorldToInstance(r);
+                if(!instance->intersect(ray, isect))
+                    return false;
+                r.maxt = ray.maxt;
+                isect->WorldToObject = isect->WorldToObject * WorldToInstance;
+                //< Transform instance's differential geometry to world space>
+                return true;
+        }
+        virtual const AreaLight *getAreaLight() const{throw std::runtime_error("InstancePrimitive is not allowed to call getAreaLight."); }
+        virtual BSDF *getBSDF(const DifferentialGeometry &dg, const Transform &WorldToObject)const
+        {throw std::runtime_error("InstancePrimitive is not allowed to call getBSDF."); }
+    private:
+        //< InstancePrimitive Private Data>
+        Primitive * instance;
+        Transform InstanceToWorld, WorldToInstance;
+    };
+    class Aggregate : public Primitive
+    {
+    public:
+        //<Aggregate Public Methods>
+    };
+
+
+
+
 
 }
 
