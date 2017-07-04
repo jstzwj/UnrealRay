@@ -2,44 +2,111 @@
 #define FILM_H
 
 #include<QImage>
+#include<string>
+#include<vector>
+#include<cmath>
+#include"Ray.h"
+#include"Sampler.h"
+#include"Filter.h"
+
 namespace unreal
 {
-    class FilmBase
-    {
-    public:
-        virtual ~FilmBase()=default;
-        virtual void setPoint(int x,int y,unsigned int color)=0;
 
-    };
 
     template<class T>
-    class Film:public FilmBase
+    class Film
     {
     private:
         T data;
     public:
-        Film()=default;
-        Film(const T& img):data(img){}
+        //<Film Public Data>
+        const int xResolution, yResolution;
+        //<Film Interface>
+        Film(int xres, int yres)
+            : xResolution(xres), yResolution(yres)
+        {
+        }
+        //<Film Interface>
+        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, float alpha) = 0;
+        virtual void writeImage() = 0;
+        //<Film Interface> +=
+        virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;
+
         virtual ~Film()=default;
         virtual void setPoint(int x,int y,unsigned int color)=0;
         T& getData(){return data;}
     };
 
-    template<>
-    class Film<QImage>:public FilmBase
-    {
-    private:
-        QImage data;
-    public:
-        Film()=default;
-        Film(const QImage& img):data(img){}
-        virtual ~Film()=default;
-        virtual void setPoint(int x,int y,unsigned int color)
-        {
-            data.setPixel(x,y,color);
-        }
 
-        QImage& getData(){return data;}
+
+
+    struct Pixel
+    {
+        Pixel () : L(0.f)
+        {
+            alpha = 0.f;
+            weightSum =0.f;
+        }
+        Spectrum L;
+        double alpha, weightSum;
+    };
+
+    class ImageFilm : public Film
+    {
+    public:
+            //< ImageFilm public Method>
+        ImageFilm(int xres, int yres,
+                   Filter *filt , const float crop[4],
+                   const string &fn, bool premult, int wf)
+           : Film(xres, yres)
+        {
+            filter = filt;
+            memcpy(cropWindow, crop, 4 * sizeof(float));
+            filename = fn;
+            premultiplyAlpha = premult;
+            writeFrequency = sampleCount = wf;
+            //<Compute film image extent>
+            xPixelStart = std::ceil (xResolution * cropWindow[0]);
+            xPixelCount = std::ceil (xResolution * cropWindow[1]) - xPixelStart;
+            yPixelStart = std::ceil (yResolution * cropWindow[2]);
+            yPixelCount = std::ceil (yResolution * cropWindow[3]) - yPixelStart;
+            //<Allocate film image storage>
+            pixels = std::vector<Pixel>(xPixelCount*yPixelCount);
+            //<Precompute filter weight table>
+#define FILTER_TABLE_SIZE 16
+            filterTable = std::vector<double>(FILTER_TABLE_SIZE * FILTER_TABLE_SIZE);
+            double *ftp = &filterTable.begin();
+            for ( int y = 0; y < FILTER_TABLE_SIZE; ++y)
+            {
+                double fy = ( (double ) y + 0.5) *
+                        filter->yWidth / FILTER_TABLE_SIZE;
+
+                for (int x = 0; x < FILTER_TABLE_SIZE; ++x)
+                {
+                    double fx = ( ( double ) x + 0.5) *
+                        filter->xWidth / FILTER_TABLE_SIZE;
+                    *ftp++ = filter->Evaluate(fx,fy);
+                }
+            }
+        }
+        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, double alpha)override
+        {
+                //<Compute sample's raster extent>
+                //<Loop over filter support and add sample to pixel arrays>
+                //<Possibly write out in-progress image>
+        }
+    private:
+        //<ImageFilm Private Data>
+        Filter *filter;
+        int writeFrequency, sampleCount;
+        std::string filename;
+        bool premultiplyAlpha;
+        double cropWindow[4];
+
+        int  xPixelStart, xPixelCount, yPixelStart, yPixelCount;
+
+        std::vector<Pixel> pixels;
+        std::vector<double> filterTable;
     };
 
 }

@@ -16,7 +16,7 @@ namespace unreal
 	public:
         Camera(const Transform &world2cam, double hither, double yon,
                     double sopen, double sclose, Film * film);
-		~Camera();
+        virtual ~Camera()=default;
         virtual double GenerateRay(const Sampler &sample, Ray *ray) const = 0;
 	protected:
 		Transform WorldToCamera, CameraToWorld;

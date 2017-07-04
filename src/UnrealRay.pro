@@ -49,7 +49,9 @@ HEADERS  += mainwindow.h \
     UnrealRay/UnrealRender.h \
     UnrealRay/vector.h \
     Differentialgeometry.h \
-    Utility.h
+    Utility.h \
+    Filter.h \
+    Spectrum.h
 
 FORMS    += mainwindow.ui
 
