@@ -17,7 +17,7 @@ namespace unreal
         Camera(const Transform &world2cam, double hither, double yon,
                     double sopen, double sclose, Film * film);
         virtual ~Camera()=default;
-        virtual double GenerateRay(const Sampler &sample, Ray *ray) const = 0;
+        virtual double generateRay(const Sampler &sample, Ray *ray) const = 0;
 	protected:
 		Transform WorldToCamera, CameraToWorld;
         double ClipHither, ClipYon;   // Hither: ½üµÄ£» Yon:Ô¶µÄ
@@ -69,7 +69,7 @@ namespace unreal
             return Transform::scale(1.0, 1.0, 1.0/(zfar-znear)) *
                     Transform::translate(Vector(0.0, 0.0, -znear));
         }
-        double GenerateRay(const Sample &sample, Ray *ray) const
+        virtual double generateRay(const Sample &sample, Ray *ray) const override
         {
             //<Generate raster and camera samples>
             Point Pras(sample.imageX, sample.imageY, 0);

@@ -51,7 +51,8 @@ HEADERS  += mainwindow.h \
     Differentialgeometry.h \
     Utility.h \
     Filter.h \
-    Spectrum.h
+    Spectrum.h \
+    Integrator.h
 
 FORMS    += mainwindow.ui
 

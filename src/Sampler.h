@@ -82,7 +82,7 @@ namespace unreal
         //<Sampler Interface>
         virtual int roundSize(int size) const = 0;
         //<Sampler Interface>
-        virtual bool GetNextSample(Sampler *sample) = 0;
+        virtual bool getNextSample(Sample *sample) = 0;
         //<Sampler Interface>
         int totalSamples() const
         {

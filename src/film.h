@@ -33,8 +33,6 @@ namespace unreal
         virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;
 
         virtual ~Film()=default;
-        virtual void setPoint(int x,int y,unsigned int color)=0;
-        T& getData(){return data;}
     };
 
 

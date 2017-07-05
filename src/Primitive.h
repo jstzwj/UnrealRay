@@ -30,6 +30,7 @@ namespace unreal
         virtual bool canIntersect() const ;
         virtual bool intersect(const Ray &r, Intersection *in) const  = 0;
         virtual bool intersect (const Ray &r) const = 0 ;
+        virtual bool intersectP (const Ray &r) const = 0 ;
         virtual void refine(std::vector<Primitive *> &refined) const ;
         void fullyRefine(std::vector<Primitive *> &refined) const
         {
