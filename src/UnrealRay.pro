@@ -52,7 +52,9 @@ HEADERS  += mainwindow.h \
     Utility.h \
     Filter.h \
     Spectrum.h \
-    Integrator.h
+    Integrator.h \
+    Bsdf.h \
+    Interaction.h
 
 FORMS    += mainwindow.ui
 

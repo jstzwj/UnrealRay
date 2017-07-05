@@ -21,7 +21,7 @@ namespace unreal
             // Scene Constructor Implementation
             for (const auto &light : lights)
             {
-                light->Preprocess(*this);
+                light->preprocess(*this);
             }
         }
         bool intersect(const Ray &ray, SurfaceInteraction *isect) const

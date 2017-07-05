@@ -8,6 +8,7 @@
 #include"Ray.h"
 #include"Sampler.h"
 #include"Filter.h"
+#include"Spectrum.h"
 
 namespace unreal
 {
@@ -27,7 +28,7 @@ namespace unreal
         {
         }
         //<Film Interface>
-        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, float alpha) = 0;
+        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, double alpha=1.0) = 0;
         virtual void writeImage() = 0;
         //<Film Interface> +=
         virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;

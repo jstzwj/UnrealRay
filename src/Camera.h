@@ -84,7 +84,7 @@ namespace unreal
             ray->maxt = ClipYon - ClipHither;
             ray->direction = ray->direction.normalize();
             *ray=CameraToWorld.transform(*ray);
-            return 1.f;
+            return 1.0;
         }
     };
 }
