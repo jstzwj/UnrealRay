@@ -13,8 +13,8 @@ namespace unreal
 {
     struct Sample
     {
-        double imageX,imageY;
-        double time;
+        Float imageX,imageY;
+        Float time;
     };
 
 	class Sampler
@@ -31,12 +31,12 @@ namespace unreal
             array1DOffset = array2DOffset = 0;
         }
 
-        virtual double get1D() = 0;
+        virtual Float get1D() = 0;
         virtual Point2f get2D() = 0;
         void request1DArray(int n)
         {
             samples1DArraySizes.push_back(n);
-            sampleArray1D.push_back(std::vector<double>(n * samplesPerPixel));
+            sampleArray1D.push_back(std::vector<Float>(n * samplesPerPixel));
         }
 
         void request2DArray(int n)
@@ -46,7 +46,7 @@ namespace unreal
         }
 
         virtual int roundCount(int n) const { return n; }
-        const double *get1DArray(int n)
+        const Float *get1DArray(int n)
         {
             if (array1DOffset == sampleArray1D.size()) return nullptr;
             return &sampleArray1D[array1DOffset++][currentPixelSampleIndex * n];
@@ -83,7 +83,7 @@ namespace unreal
         Point2i currentPixel;
         int64_t currentPixelSampleIndex;
         std::vector<int> samples1DArraySizes, samples2DArraySizes;
-        std::vector<std::vector<double>> sampleArray1D;
+        std::vector<std::vector<Float>> sampleArray1D;
         std::vector<std::vector<Point2f>> sampleArray2D;
 
       private:

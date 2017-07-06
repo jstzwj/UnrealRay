@@ -5,6 +5,7 @@
 #include"Point.h"
 #include"Vector.h"
 #include"Point.h"
+#include"Type.h"
 #include<limits>
 #include<cmath>
 
@@ -18,6 +19,7 @@ namespace unreal
         Point3f origin;
         Vector3f direction;
         Float mint, maxt;
+        Float time;
 	public:
         Ray() : mint(RAY_EPSILON), maxt(RAY_INFINITY) {}
         Ray(const Point3f &origin, const Vector3f &direction,

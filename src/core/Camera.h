@@ -15,14 +15,17 @@ namespace unreal
 	class Camera
 	{
 	public:
-        Camera(const Transform &world2cam, double hither, double yon,
-                    double sopen, double sclose, Film * film);
+        Camera(const Transform &CameraToWorld, Float shutterOpen,Float shutterClose, Film *film)
+            :WorldToCamera(CameraToWorld.getInverse()),CameraToWorld(WorldToCamera),
+              shutterOpen(shutterOpen),shutterClose(shutterClose),
+              film(film){}
+
         virtual ~Camera()=default;
-        virtual double generateRay(const Sample &sample, Ray *ray) const = 0;
+        virtual Float generateRay(const Sample &sample, Ray *ray) const = 0;
     public:
 		Transform WorldToCamera, CameraToWorld;
-        double ClipHither, ClipYon;   // Hither: 近的； Yon:远的
-        double ShutterOpen, ShutterClose;
+        //double clipHither, clipYon;   // Hither: 近的； Yon:远的
+        Float shutterOpen, shutterClose;
         Film * film;
 	};
     class ProjectiveCamera : public Camera
@@ -31,9 +34,9 @@ namespace unreal
         //< ProjectiveCamera Public Methods>
     ProjectiveCamera(const Transform &CameraToWorld,
                      const Transform &CameraToScreen,
-                     const Bounds2f &screenWindow, Float shutterOpen,
-                     double shutterClose, double lensr, double focald, Film *film)
-       : Camera(w2c, hither, yon, sopen, sclose, f)
+                     const Bounds2f &screenWindow, Float shutterOpen,Float shutterClose,
+                     Float lensr, Float focald, Film *film)
+       : Camera(CameraToWorld, shutterOpen, shutterClose, film),CameraToScreen(CameraToScreen)
     {
         // Initialize depth of field parameters
         lensRadius = lensr;
@@ -54,43 +57,36 @@ namespace unreal
         //< ProjectiveCamera Protected Data>
         Transform CameraToScreen, RasterToCamera;
         Transform ScreenToRaster, RasterToScreen;
-        double lensRadius, focalDistance;
+        Float lensRadius, focalDistance;
     };
 
     class OrthoCamera : public ProjectiveCamera
     {
     public:
         //<OrthoCamera Public Methods>
-        OrthoCamera(const Transform &world2cam,
-                const double Screen[4], double hither, double yon,
-                double sopen, double sclose, double lensr,
-                double focald, Film *f)
-            : ProjectiveCamera(world2cam, orthographic(hither, yon),
-                    Screen, hither, yon, sopen, sclose,
-                    lensr, focald, f)
-        {
-        }
+        OrthoCamera(const Transform &CameraToWorld,
+                               const Bounds2f &screenWindow, Float shutterOpen,
+                               Float shutterClose, Float lensRadius, Float focalDistance,
+                                Film *film)
+            : ProjectiveCamera(CameraToWorld, orthographic(0, 1),
+                    screenWindow, shutterOpen, shutterClose,
+                               lensRadius, focalDistance, film){}
         Transform orthographic(double znear, double zfar)
         {
             return Transform::scale(1.0, 1.0, 1.0/(zfar-znear)) *
                     Transform::translate(Vector3f(0.0, 0.0, -znear));
         }
-        virtual double generateRay(const Sample &sample, Ray *ray) const override
+        virtual Float generateRay(const Sample &sample, Ray *ray) const override
         {
-            //<Generate raster and camera samples>
-            Point3f Pras(sample.imageX, sample.imageY, 0);
-            Point3f Pcamera;
-            Pcamera=RasterToCamera.transform(Pras);
-
-            ray->origin = Pcamera;
-            ray->direction = Vector3f(0, 0, 1);
-            //<Set ray time value>
-            //<Modify ray for depth of field>
-            ray->mint = 0;
-            ray->maxt = ClipYon - ClipHither;
-            ray->direction = ray->direction.normalize();
-            *ray=CameraToWorld.transform(*ray);
-            return 1.0;
+            // Compute raster and camera sample positions
+            Point3f pFilm = Point3f(sample.imageX, sample.imageY, 0);
+            Point3f pCamera = RasterToCamera.transform(pFilm);
+            *ray = Ray(pCamera, Vector3f(0, 0, 1));
+            // Modify ray for depth of field
+            //TODO
+            ray->time = ::unreal::lerp(sample.time, shutterOpen, shutterClose);
+            *ray = CameraToWorld.transform(*ray);
+            return 1;
         }
     };
 }

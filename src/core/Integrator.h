@@ -23,11 +23,9 @@ namespace unreal
     public:
         SamplerIntegrator(std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : camera(camera), sampler(sampler) { }
-        virtual void preprocess(const Scene &scene, Sampler &sampler) { }
         virtual void render(const Scene &scene) override
         {
-            preprocess(scene, *sampler);
-            // Render image tiles in parallel
+            // Render image
             {
                 Film *film=camera->film;
                 while(sampler->startNextSample())
@@ -70,32 +68,7 @@ namespace unreal
             : SamplerIntegrator(camera, sampler), maxDepth(maxDepth) {}
         Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const
         {
-            SurfaceInteraction inract;
-            Spectrum L(0.0);
-            if(!scene.intersect(ray, &inract))
-            {
-                //<Handle ray with nointersection>
-                for (const auto& each_light:scene.lights)
-                    L  +=  each_light->Le(ray);
-                return L;
-            }
-            //<Compute emitted and reflected light at ray intersection point>
 
-            //<Evaluate BSDF at hit point>
-            //<Initialize common variables for Whittedintegrator>
-            //<Compute emiited light if ray hit an area lightsource>
-            L += inract.Le(wo);
-            //<Add contribution of each light source>
-            Vector3f wi;
-            for(const auto& each_light:scene.lights)
-            {
-                Spectrum Li = each_light->sample_Li(p, &wi, &visibility);
-                if(Li.black()) continue;
-                Spectrum f = bsdf->f(wo, wi);
-                if(!f.black() && visibility.unoccluded(scene))
-                    L += f * Li * AbsDot(wi, n) * visibility.Transmittance(scene);
-            }
-            return L;
         }
       private:
         // WhittedIntegrator Private Data

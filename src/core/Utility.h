@@ -51,9 +51,12 @@ namespace unreal
     }
 
     template <typename T>
-    Point3<T> lerp(Float t, const Point3<T> &p0, const Point3<T> &p1) {
+    Point3<T> lerp(Float t, const Point3<T> &p0, const Point3<T> &p1)
+    {
         return (1 - t) * p0 + t * p1;
     }
+
+    inline Float lerp(Float t, Float v1, Float v2) { return (1 - t) * v1 + t * v2; }
 }
 
 #endif // UTILITY_H

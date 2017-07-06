@@ -6,6 +6,7 @@
 
 #include"Point.h"
 #include"Vector.h"
+#include"Utility.h"
 
 
 
@@ -58,8 +59,8 @@ namespace unreal
         }
         Point2<T> lerp(const Point2f &t) const
         {
-            return Point2<T>(::lerp(t.x, pMin.x, pMax.x),
-                             ::lerp(t.y, pMin.y, pMax.y));
+            return Point2<T>(::unreal::lerp(t.x, pMin.x, pMax.x),
+                             ::unreal::lerp(t.y, pMin.y, pMax.y));
         }
         Vector2<T> offset(const Point2<T> &p) const {
             Vector2<T> o = p - pMin;
@@ -122,9 +123,9 @@ namespace unreal
         }
         Point3<T> lerp(const Point3f &t) const
         {
-            return Point3<T>(::lerp(t.x, pMin.x, pMax.x),
-                             ::lerp(t.y, pMin.y, pMax.y),
-                             ::lerp(t.z, pMin.z, pMax.z));
+            return Point3<T>(::unreal::lerp(t.x, pMin.x, pMax.x),
+                             ::unreal::lerp(t.y, pMin.y, pMax.y),
+                             ::unreal::lerp(t.z, pMin.z, pMax.z));
         }
         Vector3<T> offset(const Point3<T> &p) const
         {
