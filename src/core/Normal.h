@@ -1,91 +1,93 @@
 #ifndef NORMAL_H
 #define NORMAL_H
 
+#include"Type.h"
 #include"Vector.h"
 
 namespace unreal
 {
-
-    class Normal
+    template<class T>
+    class Normal3
     {
     public:
-        double x, y, z;
+        T x, y, z;
     public:
-        Normal()
+        Normal3()
             :x(0.0), y(0.0), z(0.0) {}
-        Normal(double in_x, double in_y, double in_z)
+        Normal3(T in_x, T in_y, T in_z)
             :x(in_x), y(in_y), z(in_z) {}
-        explicit Normal(const Vector &v)
+        template<class U>
+        explicit Normal3(const Vector3<U> &v)
                 : x(v.x),  y(v.y), z(v.z) {}
         //Some operators
-        Normal operator + (const Normal & rhs)
+        Normal3<T> operator + (const Normal3<T> & rhs)
         {
-            return Normal(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z);
+            return Normal3<T>(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z);
         }
-        Normal operator + (double rhs)
+        Normal3<T> operator + (T rhs)
         {
-            return Normal(this->x + rhs, this->y + rhs, this->z + rhs);
+            return Normal3<T>(this->x + rhs, this->y + rhs, this->z + rhs);
         }
-        Normal operator - (const Normal & rhs)
+        Normal3<T> operator - (const Normal3<T> & rhs)
         {
-            return Normal(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z);
+            return Normal3<T>(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z);
         }
-        Normal operator - (double rhs)
+        Normal3<T> operator - (T rhs)
         {
-            return Normal(this->x - rhs, this->y - rhs, this->z - rhs);
+            return Normal3<T>(this->x - rhs, this->y - rhs, this->z - rhs);
         }
-        Normal operator * (const Normal & rhs)
+        Normal3<T> operator * (const Normal3<T> & rhs)
         {
-            return Normal(this->x * rhs.x, this->y * rhs.y, this->z * rhs.z);
+            return Normal3<T>(this->x * rhs.x, this->y * rhs.y, this->z * rhs.z);
         }
-        Normal operator * (double rhs)
+        Normal3<T> operator * (T rhs)
         {
-            return Normal(this->x * rhs, this->y * rhs, this->z * rhs);
+            return Normal3<T>(this->x * rhs, this->y * rhs, this->z * rhs);
         }
-        Normal operator / (const Normal & rhs)
+        Normal3<T> operator / (const Normal3<T> & rhs)
         {
-            return Normal(this->x / rhs.x, this->y / rhs.y, this->z / rhs.z);
+            return Normal3<T>(this->x / rhs.x, this->y / rhs.y, this->z / rhs.z);
         }
-        Normal operator / (double rhs)
+        Normal3<T> operator / (T rhs)
         {
-            return Normal(this->x / rhs, this->y / rhs, this->z / rhs);
+            return Normal3<T>(this->x / rhs, this->y / rhs, this->z / rhs);
         }
-        Normal& operator += (const Normal & rhs)
+        Normal3<T>& operator += (const Normal3<T> & rhs)
         {
             x += rhs.x;
             y += rhs.y;
             z += rhs.z;
             return *this;
         }
-        Normal& operator += (double rhs)
+        Normal3<T>& operator += (T rhs)
         {
             x += rhs;
             y += rhs;
             z += rhs;
             return *this;
         }
-        Normal& operator -= (const Normal & rhs)
+        Normal3<T>& operator -= (const Normal3<T> & rhs)
         {
             x -= rhs.x;
             y -= rhs.y;
             z -= rhs.z;
             return *this;
         }
-        Normal& operator -= (double rhs)
+        Normal3<T>& operator -= (T rhs)
         {
             x -= rhs;
             y -= rhs;
             z -= rhs;
             return *this;
         }
-        Normal& operator *= (const Normal & rhs)
+        Normal3<T>& operator *= (const Normal3<T> & rhs)
         {
             x *= rhs.x;
             y *= rhs.y;
             z *= rhs.z;
             return *this;
         }
-        Normal& operator *= (double rhs)
+        Normal3<T>& operator *= (T rhs)
         {
             x *= rhs;
             y *= rhs;
@@ -93,15 +95,15 @@ namespace unreal
             return *this;
         }
 
-        Normal operator-()
+        Normal3<T> operator-()
         {
-            return Normal(-x, -y, -z);
+            return Normal3<T>(-x, -y, -z);
         }
-        Normal operator+()
+        Normal3<T> operator+()
         {
-            return Normal(*this);
+            return Normal3<T>(*this);
         }
-        double operator[](int i)
+        T operator[](int i)
         {
             switch(i)
             {
@@ -115,31 +117,33 @@ namespace unreal
                 return z;
                 break;
             default:
-                throw std::runtime_error("Normal:out of range");
+                throw std::runtime_error("Normal3<T>:out of range");
             }
         }
 
         //Some useful functions
-        double sqrLength()
+        T sqrLength()
         {
             return x*x + y*y + z*z;
         }
-        double length()
+        T length()
         {
             return sqrt(x*x + y*y + z*z);
         }
-        Normal normalize()
+        Normal3<T> normalize()
         {
-            return Normal(x/length(),y/length(),z/length());
+            return Normal3<T>(x/length(),y/length(),z/length());
         }
-        double dot(const Normal &rhs)
+        T dot(const Normal3<T> &rhs)
         {
             return x*rhs.x + y*rhs.y + z*rhs.z;
         }
-        Normal cross(const Normal &rhs)
+        Normal3<T> cross(const Normal3<T> &rhs)
         {
-            return Normal(-z * rhs.y + y * rhs.z, z * rhs.x - x * rhs.z, -y * rhs.x + x * rhs.y);
+            return Normal3<T>(-z * rhs.y + y * rhs.z, z * rhs.x - x * rhs.z, -y * rhs.x + x * rhs.y);
         }
     };
+    using Normal3i=Normal3<int>;
+    using Normal3f=Normal3<Float>;
 }
 #endif // NORMAL_H

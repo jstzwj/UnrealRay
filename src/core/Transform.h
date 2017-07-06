@@ -4,6 +4,7 @@
 
 #include<cmath>
 #include<cassert>
+#include"Type.h"
 #include"Utility.h"
 #include"Matrix.h"
 #include"Vector.h"
@@ -21,7 +22,7 @@ namespace unreal
         Matrix4x4 m,mInv;
     public:
         Transform()=default;
-        Transform(double *mat) {
+        Transform(Float *mat) {
             m =Matrix4x4(mat);
             mInv = m.inverse();
         }
@@ -37,7 +38,7 @@ namespace unreal
             return Transform(mInv, m);
         }
 
-        static Transform translate(const Vector &delta)
+        static Transform translate(const Vector3f &delta)
         {
             Matrix4x4 m(1,0,0,delta.x,
                         0,1,0,delta.y,
@@ -49,7 +50,7 @@ namespace unreal
                            0,0,0,   1   );
             return Transform(m, mInv);
         }
-        static Transform  scale(double x, double y, double z)
+        static Transform  scale(Float x, Float y, Float z)
         {
             Matrix4x4 m(x, 0, 0, 0,
                         0, y, 0, 0,
@@ -61,10 +62,10 @@ namespace unreal
                            0,     0       ,0     ,1);
                 return Transform(m, mInv);
         }
-        static Transform  rotateX(double  angle)
+        static Transform  rotateX(Float  angle)
         {
-            double sin_t = std::sin(radians(angle));
-            double cos_t = std::cos(radians(angle));
+            Float sin_t = std::sin(radians(angle));
+            Float cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(1, 0    , 0     , 0,
                         0, cos_t, -sin_t, 0,
@@ -72,10 +73,10 @@ namespace unreal
                         0, 0    , 0     , 1);
             return Transform(m, m.transpose());
         }
-        static Transform  rotateY(double  angle)
+        static Transform  rotateY(Float  angle)
         {
-            double sin_t = std::sin(radians(angle));
-            double cos_t = std::cos(radians(angle));
+            Float sin_t = std::sin(radians(angle));
+            Float cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(cos_t,0 , -sin_t, 0,
                         0    ,1 , 0     , 0,
@@ -83,10 +84,10 @@ namespace unreal
                         0    ,0 , 0     , 1);
             return Transform(m, m.transpose());
         }
-        static Transform  rotateZ(double  angle)
+        static Transform  rotateZ(Float  angle)
         {
-            double sin_t = std::sin(radians(angle));
-            double cos_t = std::cos(radians(angle));
+            Float sin_t = std::sin(radians(angle));
+            Float cos_t = std::cos(radians(angle));
 
             Matrix4x4 m(cos_t, -sin_t,0  , 0,
                         sin_t, cos_t ,0  , 0,
@@ -94,12 +95,12 @@ namespace unreal
                         0    , 0     ,0  , 1);
             return Transform(m, m.transpose());
         }
-        static Transform rotate(double angle, const Vector &axis)
+        static Transform rotate(Float angle, const Vector3f &axis)
         {
-                Vector a = axis.normalize();
-                double s = std::sin(radians(angle));
-                double c = std::cos(radians(angle));
-                double m[4][4];
+                Vector3f a = axis.normalize();
+                Float s = std::sin(radians(angle));
+                Float c = std::cos(radians(angle));
+                Float m[4][4];
                 m[0][0] = a.x * a.x + (1.0 - a.x * a.x) * c;
                 m[0][1] = a.x * a.y + (1.0 - c) - a.z *s;
                 m[0][2] = a.x * a.z * (1.0 - c) + a.y * s;
@@ -122,9 +123,9 @@ namespace unreal
                 Matrix4x4 mat(m);
                 return Transform(mat, mat.transpose());
         }
-        static Transform lookAt(const Point &pos, const Point &look, const Vector &up)
+        static Transform lookAt(const Point3f &pos, const Point3f &look, const Vector3f &up)
         {
-            double m[4][4];
+            Float m[4][4];
 
             Matrix4x4 camToWorld(m);
             return Transform(camToWorld.inverse(), camToWorld);
@@ -134,30 +135,30 @@ namespace unreal
             return Transform(other.mInv, other.m);
         }
 
-        Point transform(const Point &pt) const
+        Point3f transform(const Point3f &pt) const
         {
-            double x = pt.x, y = pt.y, z = pt.z;
-            double xp = m.data[0][0]*x + m.data[0][1]*y + m.data[0][2]*z + m.data[0][3];
-            double yp = m.data[1][0]*x + m.data[1][1]*y + m.data[1][2]*z + m.data[1][3];
-            double zp = m.data[2][0]*x + m.data[2][1]*y + m.data[2][2]*z + m.data[2][3];
-            double wp = m.data[3][0]*x + m.data[3][1]*y + m.data[3][2]*z + m.data[3][3];
+            Float x = pt.x, y = pt.y, z = pt.z;
+            Float xp = m.data[0][0]*x + m.data[0][1]*y + m.data[0][2]*z + m.data[0][3];
+            Float yp = m.data[1][0]*x + m.data[1][1]*y + m.data[1][2]*z + m.data[1][3];
+            Float zp = m.data[2][0]*x + m.data[2][1]*y + m.data[2][2]*z + m.data[2][3];
+            Float wp = m.data[3][0]*x + m.data[3][1]*y + m.data[3][2]*z + m.data[3][3];
             assert(wp != 0);
             if(wp == 1.0)
-                return Point(xp, yp, zp);
+                return Point3f(xp, yp, zp);
             else
-                return Point(xp,yp,zp)/wp;
+                return Point3f(xp,yp,zp)/wp;
         }
-        Vector transform(const Vector &v) const
+        Vector3f transform(const Vector3f &v) const
         {
-            double x = v.x, y = v.y, z = v.z;
-            return Vector(m.data[0][0]*x + m.data[0][1]*y + m.data[0][2]*z,
+            Float x = v.x, y = v.y, z = v.z;
+            return Vector3f(m.data[0][0]*x + m.data[0][1]*y + m.data[0][2]*z,
                           m.data[1][0]*x + m.data[1][1]*y + m.data[1][2]*z,
                           m.data[2][0]*x + m.data[2][1]*y + m.data[2][2]*z);
         }
-        Normal transform(const Normal &n) const
+        Normal3f transform(const Normal3f &n) const
         {
-            double x = n.x, y = n.y, z = n.z;
-            return Normal(mInv.data[0][0] *x + mInv.data[1][0]*y + mInv.data[0][0]*z,
+            Float x = n.x, y = n.y, z = n.z;
+            return Normal3f(mInv.data[0][0] *x + mInv.data[1][0]*y + mInv.data[0][0]*z,
                           mInv.data[0][1] *x + mInv.data[1][1]*y + mInv.data[0][1]*z,
                           mInv.data[0][2] *x + mInv.data[1][2]*y + mInv.data[0][2]*z);
         }
@@ -179,7 +180,7 @@ namespace unreal
 
         bool swapsHandedness() const
         {
-            double det = (( m.data[0][0] *(m.data[1][1] * m.data[2][2] - m.data[1][2] * m.data[2][1]))
+            Float det = (( m.data[0][0] *(m.data[1][1] * m.data[2][2] - m.data[1][2] * m.data[2][1]))
                     -(m.data[0][1] *(m.data[1][0] * m.data[2][2] - m.data[1][2] * m.data[2][0])) +
                         (m.data[0][2] *(m.data[1][0] * m.data[2][1] -m.data[1][1] * m.data[2][0])));
             return det < 0.f;

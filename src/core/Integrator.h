@@ -86,7 +86,7 @@ namespace unreal
             //<Compute emiited light if ray hit an area lightsource>
             L += inract.Le(wo);
             //<Add contribution of each light source>
-            Vector wi;
+            Vector3f wi;
             for(const auto& each_light:scene.lights)
             {
                 Spectrum Li = each_light->sample_Li(p, &wi, &visibility);

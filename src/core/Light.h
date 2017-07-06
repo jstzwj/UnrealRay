@@ -61,7 +61,7 @@ namespace unreal
         // PointLight Public Methods
         PointLight(const Transform &LightToWorld, const Spectrum &I)
             : Light(LightToWorld, (int)LightFlags::DeltaPosition),
-              pLight(LightToWorld.transform(Point(0, 0, 0))),
+              pLight(LightToWorld.transform(Point3f(0, 0, 0))),
               I(I){}
         /*Spectrum sample_Li(const Interaction &ref, const Point &u, Vector *wi,
                            double *pdf, VisibilityTester *vis) const;*/
@@ -75,7 +75,7 @@ namespace unreal
 
       private:
         // PointLight Private Data
-        const Point pLight;
+        const Point3f pLight;
         const Spectrum I;
     };
 }

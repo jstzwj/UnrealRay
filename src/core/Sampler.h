@@ -23,7 +23,7 @@ namespace unreal
         // Sampler Interface
         virtual ~Sampler()=default;
         Sampler(int64_t samplesPerPixel):samplesPerPixel(samplesPerPixel) {}
-        virtual void startPixel(const Point &p)
+        virtual void startPixel(const Point2i &p)
         {
             currentPixel = p;
             currentPixelSampleIndex = 0;
@@ -32,7 +32,7 @@ namespace unreal
         }
 
         virtual double get1D() = 0;
-        virtual Point get2D() = 0;
+        virtual Point2f get2D() = 0;
         void request1DArray(int n)
         {
             samples1DArraySizes.push_back(n);
@@ -42,7 +42,7 @@ namespace unreal
         void request2DArray(int n)
         {
             samples2DArraySizes.push_back(n);
-            sampleArray2D.push_back(std::vector<Point>(n * samplesPerPixel));
+            sampleArray2D.push_back(std::vector<Point2f>(n * samplesPerPixel));
         }
 
         virtual int roundCount(int n) const { return n; }
@@ -52,7 +52,7 @@ namespace unreal
             return &sampleArray1D[array1DOffset++][currentPixelSampleIndex * n];
         }
 
-        const Point *get2DArray(int n)
+        const Point2f *get2DArray(int n)
         {
             if (array2DOffset == sampleArray2D.size()) return nullptr;
             return &sampleArray2D[array2DOffset++][currentPixelSampleIndex * n];
@@ -80,11 +80,11 @@ namespace unreal
 
     protected:
         // Sampler Protected Data
-        Point currentPixel;
+        Point2i currentPixel;
         int64_t currentPixelSampleIndex;
         std::vector<int> samples1DArraySizes, samples2DArraySizes;
         std::vector<std::vector<double>> sampleArray1D;
-        std::vector<std::vector<Point>> sampleArray2D;
+        std::vector<std::vector<Point2f>> sampleArray2D;
 
       private:
         // Sampler Private Data

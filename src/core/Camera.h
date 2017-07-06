@@ -45,7 +45,7 @@ namespace unreal
             Transform::scale(film->xResolution, film->yResolution, 1) *
             Transform::scale(1 / (screenWindow.pMax.x - screenWindow.pMin.x),
                   1 / (screenWindow.pMin.y - screenWindow.pMax.y), 1) *
-            Transform::translate(Vector(-screenWindow.pMin.x, -screenWindow.pMax.y, 0));
+            Transform::translate(Vector3f(-screenWindow.pMin.x, -screenWindow.pMax.y, 0));
         RasterToScreen = Transform::inverse(ScreenToRaster);
         RasterToCamera = Transform::inverse(CameraToScreen) * RasterToScreen;
     }
@@ -72,13 +72,13 @@ namespace unreal
         Transform orthographic(double znear, double zfar)
         {
             return Transform::scale(1.0, 1.0, 1.0/(zfar-znear)) *
-                    Transform::translate(Vector(0.0, 0.0, -znear));
+                    Transform::translate(Vector3f(0.0, 0.0, -znear));
         }
         virtual double generateRay(const Sample &sample, Ray *ray) const override
         {
             //<Generate raster and camera samples>
-            Point Pras(sample.imageX, sample.imageY, 0);
-            Point Pcamera;
+            Point3f Pras(sample.imageX, sample.imageY, 0);
+            Point3f Pcamera;
             Pcamera=RasterToCamera.transform(Pras);
 
             ray->origin = Pcamera;

@@ -4,6 +4,8 @@
 #include<algorithm>
 #include<cmath>
 
+
+#include"Type.h"
 #include"Ray.h"
 #include"Normal.h"
 #include"Utility.h"
@@ -14,40 +16,40 @@
 namespace unreal
 {
     // BSDF Inline Functions
-    inline double CosTheta(const Vector &w) { return w.z; }
-    inline double Cos2Theta(const Vector &w) { return w.z * w.z; }
-    inline double AbsCosTheta(const Vector &w) { return std::abs(w.z); }
-    inline double Sin2Theta(const Vector &w)
+    inline Float CosTheta(const Vector3f &w) { return w.z; }
+    inline Float Cos2Theta(const Vector3f &w) { return w.z * w.z; }
+    inline Float AbsCosTheta(const Vector3f &w) { return std::abs(w.z); }
+    inline Float Sin2Theta(const Vector3f &w)
     {
         return std::max(0.0, 1.0 - Cos2Theta(w));
     }
 
-    inline double SinTheta(const Vector &w) { return std::sqrt(Sin2Theta(w)); }
+    inline Float SinTheta(const Vector3f &w) { return std::sqrt(Sin2Theta(w)); }
 
-    inline double TanTheta(const Vector &w) { return SinTheta(w) / CosTheta(w); }
+    inline Float TanTheta(const Vector3f &w) { return SinTheta(w) / CosTheta(w); }
 
-    inline double Tan2Theta(const Vector &w)
+    inline Float Tan2Theta(const Vector3f &w)
     {
         return Sin2Theta(w) / Cos2Theta(w);
     }
 
-    inline double CosPhi(const Vector &w)
+    inline Float CosPhi(const Vector3f &w)
     {
-        double sinTheta = SinTheta(w);
+        Float sinTheta = SinTheta(w);
         return (sinTheta == 0) ? 1 : clamp(w.x / sinTheta, -1, 1);
     }
 
-    inline double SinPhi(const Vector &w)
+    inline Float SinPhi(const Vector3f &w)
     {
-        double sinTheta = SinTheta(w);
+        Float sinTheta = SinTheta(w);
         return (sinTheta == 0) ? 0 : clamp(w.y / sinTheta, -1, 1);
     }
 
-    inline double Cos2Phi(const Vector &w) { return CosPhi(w) * CosPhi(w); }
+    inline Float Cos2Phi(const Vector3f &w) { return CosPhi(w) * CosPhi(w); }
 
-    inline double Sin2Phi(const Vector &w) { return SinPhi(w) * SinPhi(w); }
+    inline Float Sin2Phi(const Vector3f &w) { return SinPhi(w) * SinPhi(w); }
 
-    inline double CosDPhi(const Vector &wa, const Vector &wb)
+    inline Float CosDPhi(const Vector3f &wa, const Vector3f &wb)
     {
         return clamp(
             (wa.x * wb.x + wa.y * wb.y) / std::sqrt((wa.x * wa.x + wa.y * wa.y) *
@@ -58,10 +60,10 @@ namespace unreal
     {
     public:
         //const DifferentialGeometry dgShading;
-        const double eta;
+        const Float eta;
     private:
-        Normal nn, ng;
-        Vector sn, tn;
+        Normal3f nn, ng;
+        Vector3f sn, tn;
     public:
 
     };
@@ -88,10 +90,10 @@ namespace unreal
         {
             return (type & flags) == type;
         }
-        virtual Spectrum f(const Vector &wo, const Vector &wi) const = 0;
-        virtual Spectrum sample_f(const Vector &wo, Vector *wi, double u1, double u2, double *pdf) const;
-        virtual Spectrum rho(const Vector &wo, int nSamples = 16, double *samples = nullptr) const;
-        virtual Spectrum rho(int nSamples = 16, double *samples = nullptr) const;
+        virtual Spectrum f(const Vector3f &wo, const Vector3f &wi) const = 0;
+        virtual Spectrum sample_f(const Vector3f &wo, Vector3f *wi, Float u1, Float u2, Float *pdf) const;
+        virtual Spectrum rho(const Vector3f &wo, int nSamples = 16, Float *samples = nullptr) const;
+        virtual Spectrum rho(int nSamples = 16, Float *samples = nullptr) const;
 
 
 

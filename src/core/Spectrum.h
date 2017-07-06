@@ -2,6 +2,7 @@
 #define SPECTRUM_H
 
 #include<cmath>
+#include"Type.h"
 #include"Utility.h"
 
 namespace unreal
@@ -11,24 +12,24 @@ namespace unreal
     class Spectrum
     {
     public:
-        double XWeight[COLOR_SAMPLES] = {0.412453, 0.357580, 0.180423};
-        double YWeight[COLOR_SAMPLES] = {0.212671, 0.715160, 0.072169};
-        double ZWeight[COLOR_SAMPLES] = {0.019334, 0.119193, 0.950227};
+        Float XWeight[COLOR_SAMPLES] = {0.412453f, 0.357580f, 0.180423f};
+        Float YWeight[COLOR_SAMPLES] = {0.212671f, 0.715160f, 0.072169f};
+        Float ZWeight[COLOR_SAMPLES] = {0.019334f, 0.119193f, 0.950227f};
 
         static const int CIEStart = 360;
         static const int CIEEnd = 360;
         static const int nCIE = CIEEnd - CIEStart + 1;
-        static const double CIE_X[nCIE];
-        static const double CIE_Y[nCIE];
-        static const double CIE_Z[nCIE];
+        static const Float CIE_X[nCIE];
+        static const Float CIE_Y[nCIE];
+        static const Float CIE_Z[nCIE];
 
 
-        Spectrum(double v = 0.0)
+        Spectrum(Float v = 0.0)
         {
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 c[ i ] = v;
         }
-        Spectrum(double cs[COLOR_SAMPLES])
+        Spectrum(Float cs[COLOR_SAMPLES])
         {
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 c[ i ]= cs[ i ];
@@ -47,14 +48,14 @@ namespace unreal
                 ret.c[ i ]  += other.c[ i ];
             return ret;
         }
-        Spectrum operator*(double a) const
+        Spectrum operator*(Float a) const
         {
             Spectrum ret = *this;
             for (int i = 0; i < 16; ++i)
                 ret.c[i] *= a;
             return ret;
         }
-        void addWeighted(double w, const Spectrum &s)
+        void addWeighted(Float w, const Spectrum &s)
         {
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 c[ i ]  += w * s.c[ i ];
@@ -85,7 +86,7 @@ namespace unreal
                 ret.c [ i ]= c [ i ] > 0 ? std::pow(c[ i ], e.c[ i ]) : 0.f;
             return ret;
         }
-        Spectrum clamp (double low = 0.0, double hight = INFINITY) const
+        Spectrum clamp (Float low = 0.0, Float hight = INFINITY) const
         {
             Spectrum ret;
             for (int i = 0; i < COLOR_SAMPLES; ++i)
@@ -98,7 +99,7 @@ namespace unreal
                 if(std::isnan(c[ i ])) return false;
             return true;
         }
-        void XYZ(double xyz[3]) const
+        void XYZ(Float xyz[3]) const
         {
             xyz[0] = xyz[1] = xyz[2] = 0.;
             for(int i = 0; i < COLOR_SAMPLES; ++i)
@@ -108,17 +109,17 @@ namespace unreal
                 xyz[2] += ZWeight[i] * c[i];
             }
         }
-        static Spectrum FromXYZ(double x, double y, double z)
+        static Spectrum FromXYZ(Float x, Float y, Float z)
         {
-            double c[3];
-            c[0] = 3.240479 * x + -1.537150 * y + -0.498535 * z;
-            c[1] = -0.969256 * x + 1.875991 * y + 0.041556 * z;
-            c[2] = 0.055648 * x + -0.204043 * y + 1.057311 * z;
+            Float c[3];
+            c[0] = 3.240479f * x + -1.537150f * y + -0.498535f * z;
+            c[1] = -0.969256f * x + 1.875991f * y + 0.041556f * z;
+            c[2] = 0.055648f * x + -0.204043f * y + 1.057311f * z;
             return Spectrum(c);
         }
-        double y() const
+        Float y() const
         {
-            double v = 0.;
+            Float v = 0.;
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 v += YWeight[i] * c[i];
             return v;
@@ -129,7 +130,7 @@ namespace unreal
         }
 
     private:
-        double c[COLOR_SAMPLES];
+        Float c[COLOR_SAMPLES];
 
     };
 }

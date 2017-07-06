@@ -136,7 +136,7 @@ namespace unreal
     };
 
     template<class T>
-    class Vector3<T>
+    class Vector3
 	{
 	public:
         T x, y, z;

@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+
+#include"Type.h"
 #include<cstring>
 #include<cmath>
 #include<limits>
@@ -9,21 +11,21 @@ namespace unreal
     class Matrix4x4
     {
     public:
-        double data[4][4];
+        Float data[4][4];
     public:
         Matrix4x4()=default;
-        Matrix4x4(double * mat)
+        Matrix4x4(Float * mat)
         {
-            std::memcpy(data,mat,16*sizeof(double));
+            std::memcpy(data,mat,16*sizeof(Float));
         }
-        Matrix4x4(double (*mat)[4])
+        Matrix4x4(Float (*mat)[4])
         {
-            std::memcpy(data,mat,16*sizeof(double));
+            std::memcpy(data,mat,16*sizeof(Float));
         }
-        Matrix4x4(double d1,double d2,double d3,double d4,
-                  double d5,double d6,double d7,double d8,
-                  double d9,double d10,double d11,double d12,
-                  double d13,double d14,double d15,double d16)
+        Matrix4x4(Float d1,Float d2,Float d3,Float d4,
+                  Float d5,Float d6,Float d7,Float d8,
+                  Float d9,Float d10,Float d11,Float d12,
+                  Float d13,Float d14,Float d15,Float d16)
         {
             data[0][0]=d1;
             data[0][1]=d2;
@@ -42,13 +44,13 @@ namespace unreal
             data[3][2]=d15;
             data[3][3]=d16;
         }
-        double& operator[](int n)
+        Float& operator[](int n)
         {
-            return ((double *)data)[n];
+            return ((Float *)data)[n];
         }
-        double operator[](int n)const
+        Float operator[](int n)const
         {
-            return ((double *)data)[n];
+            return ((Float *)data)[n];
         }
 
         Matrix4x4 inverse()
@@ -59,7 +61,7 @@ namespace unreal
                 result.data[i][i]=1.0;
             for (int i = 0; i < 4; ++i)
             {
-                double scale = m[i*4 + i];
+                Float scale = m[i*4 + i];
                 //Unitized row
                 for (int j = 0; j < 4; ++j)
                 {
@@ -71,7 +73,7 @@ namespace unreal
                 {
                     if (j != i)
                     {
-                        double scale_each = m[i*4 + j] / m[i*4 + i];
+                        Float scale_each = m[i*4 + j] / m[i*4 + i];
                         for (int k = 0; k < 4; ++k)
                         {
                             m[k*4 + j] = m[k*4 + j] - scale_each*m[k*4 + i];
@@ -101,7 +103,7 @@ namespace unreal
             {
                 for (int j = 0; j < 4; ++j)//a col
                 {
-                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<double>::epsilon())
+                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<Float>::epsilon())
                     {
                         continue;
                     }
