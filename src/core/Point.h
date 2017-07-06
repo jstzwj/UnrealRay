@@ -15,6 +15,12 @@ namespace unreal
             :x(),y(){}
         Point2(T in_x, T in_y)
         :x(in_x),y(in_y){}
+
+        template <typename U>
+        explicit operator Point2<U>() const {
+            return Point2<U>((U)x, (U)y);
+        }
+
 		//Some operators
         Point2<T> operator+(T n) { return Point2<T>(x + n, y + n); }
         Point2<T> operator-(T n) { return Point2<T>(x - n, y - n); }
@@ -64,6 +70,12 @@ namespace unreal
             :x(0.0),y(0.0),z(0.0){}
         Point3(T in_x, T in_y, T in_z)
         :x(in_x),y(in_y),z(in_z){}
+
+        template <typename U>
+        explicit operator Point3<U>() const {
+            return Point3<U>((U)x, (U)y,(U)z);
+        }
+
         //Some operators
         Point3<T> operator+(T n) { return Point3<T>(x + n, y + n, z + n); }
         Point3<T> operator-(T n) { return Point3<T>(x - n, y - n, z - n); }

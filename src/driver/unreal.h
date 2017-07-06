@@ -9,15 +9,14 @@ namespace unreal
     class Unreal
     {
     public:
-        Unreal():
-            scene(new Scene),
-            integrator(new WhittedIntegrator)
+        Unreal()
         {
-
+            scene=new Scene();
+            integrator=new SamplerIntegrator();
         }
         void render()
         {
-            integrator->render(scene);
+            integrator->render(*scene);
         }
         virtual ~Unreal()=default;
         std::shared_ptr<Scene> scene;

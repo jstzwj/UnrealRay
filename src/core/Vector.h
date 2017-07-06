@@ -4,6 +4,7 @@
 #include<stdexcept>
 
 #include"Type.h"
+#include"Point.h"
 
 namespace unreal
 {
@@ -17,6 +18,8 @@ namespace unreal
             :x(), y() {}
         Vector2(T in_x, T in_y)
             :x(in_x), y(in_y) {}
+        Vector2(const Point2<T>& p)
+            :x(p.x), y(p.y) {}
         /*explicit Vector(const Normal &n)
                :x(n.x), y(n.y), z(n.z) { }*/
         //Some operators
@@ -141,10 +144,12 @@ namespace unreal
 	public:
         T x, y, z;
 	public:
-        Vector3<T>()
+        Vector3()
 			:x(0.0), y(0.0), z(0.0) {}
-        Vector3<T>(T in_x, T in_y, T in_z)
+        Vector3(T in_x, T in_y, T in_z)
 			:x(in_x), y(in_y), z(in_z) {}
+        Vector3(const Point3<T>& p)
+            :x(p.x), y(p.y), z(p.z){}
         /*explicit Vector3<T>(const Normal &n)
                :x(n.x), y(n.y), z(n.z) { }*/
 		//Some operators

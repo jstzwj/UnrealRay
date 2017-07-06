@@ -1,6 +1,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include"Type.h"
+#include"Point.h"
 #include<cmath>
 
 namespace unreal
@@ -15,9 +17,9 @@ namespace unreal
         else return val;
     }
 
-    const double PI= 3.1415926;
+    const Float PI= 3.1415926f;
     template<class T>
-    double radians(T n)
+    Float radians(T n)
     {
         return n*PI/180;
     }
@@ -38,14 +40,19 @@ namespace unreal
         if ( * t0 > *t1) swap(*t0, *t1);
         return true;
     }*/
-    inline bool quadratic(double A, double B, double C, double *t0, double *t1)
+    inline bool quadratic(Float A, Float B, Float C, Float *t0, Float *t1)
     {
-        double discrim = B * B - 4.0 * A * C;
+        Float discrim = B * B - 4.0 * A * C;
         if( discrim < 0 ) return false;
-        double rootDiscrim = std::sqrt(discrim);
+        Float rootDiscrim = std::sqrt(discrim);
         *t0=(-B-rootDiscrim)*0.5/A;
         *t1=(-B+rootDiscrim)*0.5/A;
         return true;
+    }
+
+    template <typename T>
+    Point3<T> lerp(Float t, const Point3<T> &p0, const Point3<T> &p1) {
+        return (1 - t) * p0 + t * p1;
     }
 }
 

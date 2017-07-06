@@ -7,6 +7,7 @@
 #include"Transform.h"
 #include"Matrix.h"
 #include"Film.h"
+#include"Bounds.h"
 
 
 namespace unreal
@@ -82,7 +83,7 @@ namespace unreal
             Pcamera=RasterToCamera.transform(Pras);
 
             ray->origin = Pcamera;
-            ray->direction = Vector(0, 0, 1);
+            ray->direction = Vector3f(0, 0, 1);
             //<Set ray time value>
             //<Modify ray for depth of field>
             ray->mint = 0;
