@@ -3,6 +3,8 @@
 #define UNREALRAY_LIGHT
 
 
+#include<algorithm>
+
 #include"Transform.h"
 #include"Spectrum.h"
 #include"Scene.h"
@@ -12,7 +14,7 @@
 
 namespace unreal
 {
-
+    /*
     class VisibilityTester
     {
       public:
@@ -28,6 +30,7 @@ namespace unreal
       private:
         Interaction p0, p1;
     };
+    */
     // LightFlags Declarations
     enum class LightFlags : int {
         DeltaPosition = 1,
@@ -40,12 +43,11 @@ namespace unreal
 	{
 	public:
         Light(const Transform &l2w, int ns = 1)
-                    : nSamples(max(1, ns)), LightToWorld(l2w),
-                WorldToLight(l2w.GetInverse()) {}
+                    : nSamples(std::max(1, ns)), LightToWorld(l2w),WorldToLight(l2w.getInverse()) {}
         virtual ~Light()=default;
 
-        virtual Spectrum sample_L(const Point &p, Vector *wi,VisibilityTester *vis) const = 0;
-        virtual Spectrum power(const Scene *) const = 0;
+        /*virtual Spectrum sample_L(const Point &p, Vector *wi,VisibilityTester *vis) const = 0;*/
+        virtual Spectrum power() const = 0;
         virtual bool isDeltaLight() const = 0;
 
         const Transform LightToWorld, WorldToLight;
@@ -59,20 +61,17 @@ namespace unreal
         // PointLight Public Methods
         PointLight(const Transform &LightToWorld, const Spectrum &I)
             : Light(LightToWorld, (int)LightFlags::DeltaPosition),
-              pLight(LightToWorld(Point(0, 0, 0))),
+              pLight(LightToWorld.transform(Point(0, 0, 0))),
               I(I){}
-        Spectrum sample_Li(const Interaction &ref, const Point &u, Vector *wi,
-                           double *pdf, VisibilityTester *vis) const;
+        /*Spectrum sample_Li(const Interaction &ref, const Point &u, Vector *wi,
+                           double *pdf, VisibilityTester *vis) const;*/
         Spectrum power() const
         {
             return I * 4.0 * PI;
         }
-        double pdf_Li(const Interaction &, const Vector &) const;
-        Spectrum sample_Le(const Point &u1, const Point &u2, double time,
+        /*Spectrum sample_Le(const Point &u1, const Point &u2, double time,
                            Ray *ray, Normal *nLight, double *pdfPos,
-                           double *pdfDir) const;
-        void pdf_Le(const Ray &, const Normal &, double *pdfPos,
-                    double *pdfDir) const;
+                           double *pdfDir) const;*/
 
       private:
         // PointLight Private Data

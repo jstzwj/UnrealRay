@@ -21,7 +21,7 @@ namespace unreal
         Ray() : mint(RAY_EPSILON), maxt(RAY_INFINITY) {}
         Ray(const Point &origin, const Vector &direction,
                 float start = RAY_EPSILON, float end = RAY_INFINITY)
-                : o(origin), d(direction), mint(start), maxt(end){}
+                : origin(origin), direction(direction), mint(start), maxt(end){}
 
         Point getPoint(double d)
         {

@@ -9,10 +9,14 @@ namespace unreal
     class Matrix4x4
     {
     public:
-        double data[16];
+        double data[4][4];
     public:
         Matrix4x4()=default;
         Matrix4x4(double * mat)
+        {
+            std::memcpy(data,mat,16*sizeof(double));
+        }
+        Matrix4x4(double (*mat)[4])
         {
             std::memcpy(data,mat,16*sizeof(double));
         }
@@ -21,29 +25,38 @@ namespace unreal
                   double d9,double d10,double d11,double d12,
                   double d13,double d14,double d15,double d16)
         {
-            data[1]=d1;
-            data[2]=d2;
-            data[3]=d3;
-            data[4]=d4;
-            data[5]=d5;
-            data[6]=d6;
-            data[7]=d7;
-            data[8]=d8;
-            data[9]=d9;
-            data[10]=d10;
-            data[11]=d11;
-            data[12]=d12;
-            data[13]=d13;
-            data[14]=d14;
-            data[15]=d15;
-            data[16]=d16;
+            data[0][0]=d1;
+            data[0][1]=d2;
+            data[0][2]=d3;
+            data[0][3]=d4;
+            data[1][0]=d5;
+            data[1][1]=d6;
+            data[1][2]=d7;
+            data[1][3]=d8;
+            data[2][0]=d9;
+            data[2][1]=d10;
+            data[2][2]=d11;
+            data[2][3]=d12;
+            data[3][0]=d13;
+            data[3][1]=d14;
+            data[3][2]=d15;
+            data[3][3]=d16;
         }
+        double& operator[](int n)
+        {
+            return ((double *)data)[n];
+        }
+        double operator[](int n)const
+        {
+            return ((double *)data)[n];
+        }
+
         Matrix4x4 inverse()
         {
             Matrix4x4 m(*this);
             Matrix4x4 result;
             for(int i=0;i<4;++i)
-                result.data[i*4+i]=1.0;
+                result.data[i][i]=1.0;
             for (int i = 0; i < 4; ++i)
             {
                 double scale = m[i*4 + i];
@@ -69,14 +82,14 @@ namespace unreal
             }
             return result;
         }
-        Matrix4x4 tramspose()
+        Matrix4x4 transpose()
         {
             Matrix4x4 result;
             for (int i = 0; i < 4; ++i)
             {
                 for (int j = 0; j < 4; ++j)
                 {
-                    result.data[i*4 + j] = data[j*4 + i];
+                    result.data[i][j] = data[j][i];
                 }
             }
             return result;
@@ -88,7 +101,7 @@ namespace unreal
             {
                 for (int j = 0; j < 4; ++j)//a col
                 {
-                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<T>::epsilon())
+                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<double>::epsilon())
                     {
                         continue;
                     }

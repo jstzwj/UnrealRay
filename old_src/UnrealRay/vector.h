@@ -1,7 +1,7 @@
 #pragma once
 #ifndef UNREALRAY_VECTOR
 #define UNREALRAY_VECTOR
-#include"math.h"
+#include<stdexcept>
 
 namespace unreal
 {
@@ -14,6 +14,8 @@ namespace unreal
 			:x(0.0), y(0.0), z(0.0) {}
 		Vector(double in_x, double in_y, double in_z)
 			:x(in_x), y(in_y), z(in_z) {}
+        /*explicit Vector(const Normal &n)
+               :x(n.x), y(n.y), z(n.z) { }*/
 		//Some operators
 		Vector operator + (const Vector & rhs)
 		{
@@ -98,24 +100,42 @@ namespace unreal
 		{
 			return Vector(*this);
 		}
+        double operator[](int i)
+        {
+            switch(i)
+            {
+            case 0:
+                return x;
+                break;
+            case 1:
+                return y;
+                break;
+            case 2:
+                return z;
+                break;
+            default:
+                throw std::runtime_error("vector:out of range");
+            }
+        }
+
 		//Some useful functions
-		double sqrLength()
+        double sqrLength()const
 		{
 			return x*x + y*y + z*z;
 		}
-		double length()
+        double length()const
 		{
 			return sqrt(x*x + y*y + z*z);
 		}
-		Vector normalize()
+        Vector normalize()const
 		{
 			return Vector(x/length(),y/length(),z/length());
 		}
-		double dot(const Vector &rhs)
+        double dot(const Vector &rhs)const
 		{
 			return x*rhs.x + y*rhs.y + z*rhs.z;
 		}
-		Vector cross(const Vector &rhs)
+        Vector cross(const Vector &rhs)const
 		{
 			return Vector(-z * rhs.y + y * rhs.z, z * rhs.x - x * rhs.z, -y * rhs.x + x * rhs.y);
 		}

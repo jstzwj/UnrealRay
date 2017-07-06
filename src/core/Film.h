@@ -12,13 +12,8 @@
 
 namespace unreal
 {
-
-
-    template<class T>
     class Film
     {
-    private:
-        T data;
     public:
         //<Film Public Data>
         const int xResolution, yResolution;
@@ -31,7 +26,7 @@ namespace unreal
         virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, double alpha=1.0) = 0;
         virtual void writeImage() = 0;
         //<Film Interface> +=
-        virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;
+        /*virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;*/
 
         virtual ~Film()=default;
     };
@@ -54,12 +49,11 @@ namespace unreal
     {
     public:
             //< ImageFilm public Method>
-        ImageFilm(int xres, int yres,
-                   Filter *filt , const float crop[4],
-                   const string &fn, bool premult, int wf)
+        ImageFilm(int xres, int yres, const double crop[4],
+                   const std::string &fn, bool premult, int wf)
            : Film(xres, yres)
         {
-            filter = filt;
+            //filter = filt;
             memcpy(cropWindow, crop, 4 * sizeof(float));
             filename = fn;
             premultiplyAlpha = premult;
@@ -72,6 +66,7 @@ namespace unreal
             //<Allocate film image storage>
             pixels = std::vector<Pixel>(xPixelCount*yPixelCount);
             //<Precompute filter weight table>
+            /*
 #define FILTER_TABLE_SIZE 16
             filterTable = std::vector<double>(FILTER_TABLE_SIZE * FILTER_TABLE_SIZE);
             double *ftp = &filterTable.begin();
@@ -87,6 +82,7 @@ namespace unreal
                     *ftp++ = filter->Evaluate(fx,fy);
                 }
             }
+            */
         }
         virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, double alpha)override
         {
@@ -96,7 +92,7 @@ namespace unreal
         }
     private:
         //<ImageFilm Private Data>
-        Filter *filter;
+        //Filter *filter;
         int writeFrequency, sampleCount;
         std::string filename;
         bool premultiplyAlpha;

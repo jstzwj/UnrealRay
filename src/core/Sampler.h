@@ -13,7 +13,7 @@ namespace unreal
 {
     struct Sample
     {
-        Point pFilm;
+        double imageX,imageY;
         double time;
     };
 

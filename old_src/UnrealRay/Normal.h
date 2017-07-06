@@ -5,7 +5,7 @@
 
 namespace unreal
 {
-    class Vector;
+
     class Normal
     {
     public:

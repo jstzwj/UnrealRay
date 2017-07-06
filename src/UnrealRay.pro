@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-07-02T16:52:43
+# Project created by QtCreator 2017-07-05T20:04:18
 #
 #-------------------------------------------------
 
@@ -13,52 +13,44 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    UnrealRay/Camera.cpp \
-    UnrealRay/Light.cpp \
-    UnrealRay/main.cpp \
-    UnrealRay/Primitive.cpp \
-    UnrealRay/Sampler.cpp \
-    UnrealRay/Scene.cpp \
-    UnrealRay/UnrealRender.cpp
+        mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    Camera.h \
-    Light.h \
-    Point.h \
-    Primitive.h \
-    Ray.h \
-    Sampler.h \
-    Scene.h \
-    Vector.h \
-    Film.h \
-    Matrix.h \
-    Shape.h \
-    Normal.h \
-    Transform.h \
-    UnrealRay/Camera.h \
-    UnrealRay/Film.h \
-    UnrealRay/Light.h \
-    UnrealRay/math.h \
-    UnrealRay/matrix.h \
-    UnrealRay/point.h \
-    UnrealRay/Primitive.h \
-    UnrealRay/ray.h \
-    UnrealRay/Sampler.h \
-    UnrealRay/Scene.h \
-    UnrealRay/UnrealRender.h \
-    UnrealRay/vector.h \
-    Differentialgeometry.h \
-    Utility.h \
-    Filter.h \
-    Spectrum.h \
-    Integrator.h \
-    Bsdf.h \
-    Interaction.h
+    core/Film.h \
+    core/Integrator.h \
+    core/Light.h \
+    core/Matrix.h \
+    core/Normal.h \
+    core/Point.h \
+    core/Primitive.h \
+    core/Ray.h \
+    core/Sampler.h \
+    core/Scene.h \
+    core/Shape.h \
+    core/Spectrum.h \
+    core/Transform.h \
+    core/Utility.h \
+    core/Vector.h \
+    driver/unreal.h \
+    core/Integrator.h \
+    core/Scene.h \
+    core/Spectrum.h \
+    core/Matrix.h \
+    core/Normal.h \
+    core/Point.h \
+    core/Transform.h \
+    core/Utility.h \
+    core/Vector.h \
+    core/Film.h \
+    core/Light.h \
+    core/Primitive.h \
+    core/Ray.h \
+    core/Sampler.h \
+    core/Shape.h \
+    core/Bounds.h \
+    core/Type.h
 
 FORMS    += mainwindow.ui
 
 DISTFILES += \
-    UnrealRay/UnrealRay.vcxproj \
-    UnrealRay/UnrealRay.vcxproj.filters \
-    UnrealRay.sln
+    build-UnrealRay-Desktop_Qt_5_7_0_MinGW_32bit-Debug/.qmake.stash

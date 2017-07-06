@@ -4,8 +4,7 @@
 #include <QMainWindow>
 #include<QPainter>
 #include<QImage>
-#include"Scene.h"
-#include"Film.h"
+#include"driver/unreal.h"
 using namespace unreal;
 namespace Ui {
     class MainWindow;

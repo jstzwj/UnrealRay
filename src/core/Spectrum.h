@@ -2,7 +2,7 @@
 #define SPECTRUM_H
 
 #include<cmath>
-#include<Utility.h>
+#include"Utility.h"
 
 namespace unreal
 {
@@ -13,11 +13,11 @@ namespace unreal
     public:
         double XWeight[COLOR_SAMPLES] = {0.412453, 0.357580, 0.180423};
         double YWeight[COLOR_SAMPLES] = {0.212671, 0.715160, 0.072169};
-        double XWeight[COLOR_SAMPLES] = {0.019334, 0.119193, 0.950227};
+        double ZWeight[COLOR_SAMPLES] = {0.019334, 0.119193, 0.950227};
 
         static const int CIEStart = 360;
         static const int CIEEnd = 360;
-        static const int nCIE = CIEend - CIEstart + 1;
+        static const int nCIE = CIEEnd - CIEStart + 1;
         static const double CIE_X[nCIE];
         static const double CIE_Y[nCIE];
         static const double CIE_Z[nCIE];
@@ -45,6 +45,13 @@ namespace unreal
             Spectrum ret = *this;
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 ret.c[ i ]  += other.c[ i ];
+            return ret;
+        }
+        Spectrum operator*(double a) const
+        {
+            Spectrum ret = *this;
+            for (int i = 0; i < 16; ++i)
+                ret.c[i] *= a;
             return ret;
         }
         void addWeighted(double w, const Spectrum &s)
@@ -96,9 +103,9 @@ namespace unreal
             xyz[0] = xyz[1] = xyz[2] = 0.;
             for(int i = 0; i < COLOR_SAMPLES; ++i)
             {
-                xyz[0] += XWeight * c[ i ];
-                xyz[1] += YWeight * c[ i ];
-                xyz[2] += ZWeight * c[ i ];
+                xyz[0] += XWeight[i] * c[i];
+                xyz[1] += YWeight[i] * c[i];
+                xyz[2] += ZWeight[i] * c[i];
             }
         }
         static Spectrum FromXYZ(double x, double y, double z)
@@ -113,10 +120,10 @@ namespace unreal
         {
             double v = 0.;
             for (int i = 0; i < COLOR_SAMPLES; ++i)
-                v += YWeight * c[ i ];
+                v += YWeight[i] * c[i];
             return v;
         }
-        bool operator<(const Spectrum &s2) const
+        bool operator <(const Spectrum &s2) const
         {
             return y() <s2.y();
         }

@@ -17,8 +17,8 @@ namespace unreal
         Camera(const Transform &world2cam, double hither, double yon,
                     double sopen, double sclose, Film * film);
         virtual ~Camera()=default;
-        virtual double generateRay(const Sampler &sample, Ray *ray) const = 0;
-	protected:
+        virtual double generateRay(const Sample &sample, Ray *ray) const = 0;
+    public:
 		Transform WorldToCamera, CameraToWorld;
         double ClipHither, ClipYon;   // Hither: ½üµÄ£» Yon:Ô¶µÄ
         double ShutterOpen, ShutterClose;
@@ -28,27 +28,32 @@ namespace unreal
     {
     public:
         //< ProjectiveCamera Public Methods>
-    ProjectiveCamera(const Transform &w2c,const Transform &proj,
-                     const double Screen[4],
-           double hither, double yon, double sopen,double sclose,
-    double lensr, double focald, Film *f)
+    ProjectiveCamera(const Transform &CameraToWorld,
+                     const Transform &CameraToScreen,
+                     const Bounds2f &screenWindow, Float shutterOpen,
+                     double shutterClose, double lensr, double focald, Film *film)
        : Camera(w2c, hither, yon, sopen, sclose, f)
     {
-        //<Initialize depth of field parameters>
-        //<Compute projective camera transformations>
-        CameraToScreen = proj;
-        WorldToScreen = CameraToScreen * WorldToCamera;
-        //(0,1) (2,3)
-        Transform ScreenToRaster = Transform::scale(film->xResolution,film->yResolution, 1.0) *
-                Transform::scale(1.0/ (Screen[1] - Screen[0]),1.0/(Screen[2] - Screen[3]), 1.0) *
-                Transform::translate(Vector(-Screen[0], - Screen[3], 0.0));
-        RasterToScreen = ScreenToRaster.GetInverse();
+        // Initialize depth of field parameters
+        lensRadius = lensr;
+        focalDistance = focald;
 
-        RasterToCamera = CameraToScreen.GetInverse() * RasterToScreen;
+        // Compute projective camera transformations
+
+        // Compute projective camera screen transformations
+        ScreenToRaster =
+            Transform::scale(film->xResolution, film->yResolution, 1) *
+            Transform::scale(1 / (screenWindow.pMax.x - screenWindow.pMin.x),
+                  1 / (screenWindow.pMin.y - screenWindow.pMax.y), 1) *
+            Transform::translate(Vector(-screenWindow.pMin.x, -screenWindow.pMax.y, 0));
+        RasterToScreen = Transform::inverse(ScreenToRaster);
+        RasterToCamera = Transform::inverse(CameraToScreen) * RasterToScreen;
     }
     protected:
         //< ProjectiveCamera Protected Data>
-        Transform CameraToScreen, WorldToScreen, RasterToCamera;
+        Transform CameraToScreen, RasterToCamera;
+        Transform ScreenToRaster, RasterToScreen;
+        double lensRadius, focalDistance;
     };
 
     class OrthoCamera : public ProjectiveCamera
@@ -59,7 +64,7 @@ namespace unreal
                 const double Screen[4], double hither, double yon,
                 double sopen, double sclose, double lensr,
                 double focald, Film *f)
-            : ProjectiveCamera(world2cam, Orthographic(hither, yon),
+            : ProjectiveCamera(world2cam, orthographic(hither, yon),
                     Screen, hither, yon, sopen, sclose,
                     lensr, focald, f)
         {
@@ -74,7 +79,7 @@ namespace unreal
             //<Generate raster and camera samples>
             Point Pras(sample.imageX, sample.imageY, 0);
             Point Pcamera;
-            RasterToCamera(Pras, &Pcamera);
+            Pcamera=RasterToCamera.transform(Pras);
 
             ray->origin = Pcamera;
             ray->direction = Vector(0, 0, 1);

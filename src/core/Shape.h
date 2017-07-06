@@ -6,44 +6,36 @@
 #include"Matrix.h"
 #include"Ray.h"
 #include"Transform.h"
-#include"Differentialgeometry.h"
+#include"Interaction.h"
 #include"Utility.h"
 
-namespace unreal {
+namespace unreal
+{
     class Shape
     {
     private:
         const Transform ObjectToWorld, WorldToObject;
         const bool reverseOrientation, transformSwapsHandedness;
     public:
-        Shape(const Transform &o2w, bool ro)
-            : ObjectToWorld(o2w), WorldToObject(o2w.GetInverse()),
-            reverseOrientation(ro),transformSwapsHandedness(o2w.swapsHandedness()) {}
-        virtual bool canIntersect() const { return true; }
-        virtual void refine(std::vector<Shape> &refined) const
-        {throw std::runtime_error("Unimplemented Shape::Refine() method called.");}
-        virtual bool intersect(const Ray &ray, double *tHit, DifferentialGeometry *dg) const
-        {
-            throw std::runtime_error("Unimplemented Shape: Interact() method called.");
-            return false;
-        }
-        virtual bool intersectP(const Ray &ray) const
-        {
-            throw std::runtime_error("Unimplemented Shape: InteractP() method called.");
-            return false;
-        }
-        virtual DifferentialGeometry getShadingGeometry(const Transform &obj2world,const DifferentialGeometry &dg) const
-        {
-            return dg;
-        }
-        virtual double area() const
-        {
-            throw std::runtime_error("Unimplemented Shape::Area() method called.");
-            return 0.0;
-        }
+        Shape(const Transform &ObjectToWorld, const Transform &WorldToObject,bool reverseOrientation)
+            : ObjectToWorld(ObjectToWorld), WorldToObject(WorldToObject),
+                reverseOrientation(reverseOrientation),transformSwapsHandedness(ObjectToWorld.swapsHandedness()) {}
+           virtual ~Shape()=default;
 
+           /*virtual bool intersect(const Ray &ray, double *tHit,SurfaceInteraction *isect,bool testAlphaTexture = true) const = 0;*/
+           virtual bool intersectP(const Ray &ray,bool testAlphaTexture = true) const {
+               /*return intersect(ray, nullptr, nullptr, testAlphaTexture);*/
+           }
+           /*
+           virtual double area() const = 0;
+           virtual Interaction sample(const Point2f &u) const = 0;
+           virtual double Pdf(const Interaction &) const { return 1 / area(); }
+           virtual Interaction sample(const Interaction &ref, const Point2f &u) const {
+               return sample(u);
+           }
+           */
     };
-
+    /*
     class Sphere : public Shape
     {
         public:
@@ -57,12 +49,11 @@ namespace unreal {
                 thetaMax = std::acos(clamp(zmax/radius,0,1));
                 phiMax = radians(clamp(pm, 0.0f, 360.f));
             }
-            virtual bool intersect(const Ray &r, double *tHit, DifferentialGeometry *dg) const override
+            virtual bool intersect(const Ray &ray, double *tHit,SurfaceInteraction *isect,bool testAlphaTexture = true) const override
             {
 
                 //<Transform Ray to object space>
-                Ray ray;
-                ray=WorldToObject.transform(r);
+                Ray ray=WorldToObject.transform(r);
                 //<Compute quadratic sphere coefficients>
                 double A = ray.direction.x*ray.direction.x + ray.direction.y*ray.direction.y + ray.direction.z*ray.direction.z;
                 double B = 2 * (ray.direction.x*ray.origin.x + ray.direction.y*ray.origin.y + ray.direction.z*ray.origin.z);
@@ -255,6 +246,7 @@ namespace unreal {
         Vector *s;
         double *uvs;
     };
+    */
 
 }
 

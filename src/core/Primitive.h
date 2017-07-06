@@ -8,31 +8,22 @@
 #include<stdexcept>
 #include"Ray.h"
 #include"Transform.h"
-#include"Differentialgeometry.h"
+#include"Interaction.h"
 
 
 namespace unreal
 {
-
-    struct Intersection
-    {
-        //<Intersection Public Methods>
-        DifferentialGeometry dg;
-        const Primitive *primitive;
-        Transform WorldToObject;
-    };
-
 	class Primitive
 	{
 	public:
 		Primitive();
 		~Primitive();
         virtual bool canIntersect() const ;
-        virtual bool intersect(const Ray &r, Intersection *in) const  = 0;
+        //virtual bool intersect(const Ray &r, Intersection *in) const  = 0;
         virtual bool intersect (const Ray &r) const = 0 ;
         virtual bool intersectP (const Ray &r) const = 0 ;
-        virtual void refine(std::vector<Primitive *> &refined) const ;
-        void fullyRefine(std::vector<Primitive *> &refined) const
+        //virtual void refine(std::vector<Primitive *> &refined) const ;
+        /*void fullyRefine(std::vector<Primitive *> &refined) const
         {
             std::vector<Primitive *> todo;
             todo.push_back(const_cast<Primitive *>(this));
@@ -49,13 +40,15 @@ namespace unreal
         }
         virtual const AreaLight *getAreaLight() const = 0;
         virtual BSDF *getBSDF(const DifferentialGeometry &dg, const Transform &WorldToObject)const  = 0;
+        */
 	};
 
     class GeometricPrimitive : public Primitive
     {
     public:
         //<GeometricPrimitive Public Methods>
-        GeometricPrimitive(const std::shared_ptr<Shape> &s,const std::shared_ptr<Material> &m,AreaLight *a);
+        GeometricPrimitive(const std::shared_ptr<Shape> &s);
+        /*
         virtual bool intersect(const Ray &r, Intersection *isect) const override
         {
             double thit;
@@ -73,11 +66,12 @@ namespace unreal
                 dgs=shape->getShadingGeometry(WorldToObject.getInverse(), dg);
                 return material->getBSDF(dg, dgs);
         }
+        */
     private:
         //<GeometricPrimitive Private Data>
         std::shared_ptr<Shape> shape;
-        std::shared_ptr<Material> material;
-        std::shared_ptr<AreaLight> areaLight;
+        /*std::shared_ptr<Material> material;*/
+        /*std::shared_ptr<AreaLight> areaLight;*/
     };
 
     class InstancePrimitive : public Primitive {
@@ -87,8 +81,9 @@ namespace unreal
         {
             instance = &i;
             InstanceToWorld = i2w;
-            WorldToInstance = i2w.GetInverse();
+            WorldToInstance = i2w.getInverse();
         }
+        /*
         virtual bool InstancePrimitive::Intersect(const Ray &r, Intersection *isect) const override
         {
                 Ray ray = WorldToInstance(r);
@@ -102,6 +97,7 @@ namespace unreal
         virtual const AreaLight *getAreaLight() const{throw std::runtime_error("InstancePrimitive is not allowed to call getAreaLight."); }
         virtual BSDF *getBSDF(const DifferentialGeometry &dg, const Transform &WorldToObject)const
         {throw std::runtime_error("InstancePrimitive is not allowed to call getBSDF."); }
+        */
     private:
         //< InstancePrimitive Private Data>
         Primitive * instance;

@@ -7,6 +7,7 @@
 #include"Utility.h"
 #include"Matrix.h"
 #include"Vector.h"
+#include"Normal.h"
 #include"Point.h"
 #include"Ray.h"
 
@@ -22,11 +23,11 @@ namespace unreal
         Transform()=default;
         Transform(double *mat) {
             m =Matrix4x4(mat);
-            mInv = m->inverse();
+            mInv = m.inverse();
         }
         Transform(const Matrix4x4 &mat) {
             m =  mat;
-            mInv = m->inverse();
+            mInv = m.inverse();
         }
 
         Transform(const Matrix4x4 &mat,const Matrix4x4 &minv)
@@ -128,6 +129,11 @@ namespace unreal
             Matrix4x4 camToWorld(m);
             return Transform(camToWorld.inverse(), camToWorld);
         }
+        static Transform inverse(const Transform & other)
+        {
+            return Transform(other.mInv, other.m);
+        }
+
         Point transform(const Point &pt) const
         {
             double x = pt.x, y = pt.y, z = pt.z;
@@ -151,18 +157,18 @@ namespace unreal
         Normal transform(const Normal &n) const
         {
             double x = n.x, y = n.y, z = n.z;
-            return Normal(mInv.m[0][0] *x + mInv.m[1][0]*y + mInv.m[0][0]*z,
-                          mInv.m[0][1] *x + mInv.m[1][1]*y + mInv.m[0][1]*z,
-                          mInv.m[0][2] *x + mInv.m[1][2]*y + mInv.m[0][2]*z);
+            return Normal(mInv.data[0][0] *x + mInv.data[1][0]*y + mInv.data[0][0]*z,
+                          mInv.data[0][1] *x + mInv.data[1][1]*y + mInv.data[0][1]*z,
+                          mInv.data[0][2] *x + mInv.data[1][2]*y + mInv.data[0][2]*z);
         }
         Ray transform(const Ray &r) const
         {
             Ray result;
-            result.o=this->transform(r.o);
-            result.d=this->transform(r.d);
-            ret.mint = r.mint;
-            ret.maxt = r.maxt;
-            return ret;
+            result.origin=this->transform(r.origin);
+            result.direction=this->transform(r.direction);
+            result.mint = r.mint;
+            result.maxt = r.maxt;
+            return result;
         }
         Transform operator *(const Transform &t) const
         {
@@ -173,9 +179,9 @@ namespace unreal
 
         bool swapsHandedness() const
         {
-            double det = (( m->m[0][0] *(m->m[1][1] * m->m[2][2] - m->m[1][2] * m->m[2][1]))
-                    -(m->m[0][1] *(m->m[1][0] * m->m[2][2] - m->m[1][2] * m->m[2][0])) +
-                        (m->m[0][2] *(m->m[1][0] * m->m[2][1] -m->m[1][1] * m->m[2][0])));
+            double det = (( m.data[0][0] *(m.data[1][1] * m.data[2][2] - m.data[1][2] * m.data[2][1]))
+                    -(m.data[0][1] *(m.data[1][0] * m.data[2][2] - m.data[1][2] * m.data[2][0])) +
+                        (m.data[0][2] *(m.data[1][0] * m.data[2][1] -m.data[1][1] * m.data[2][0])));
             return det < 0.f;
         }
 

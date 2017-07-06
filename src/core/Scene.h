@@ -19,23 +19,25 @@ namespace unreal
             : lights(lights), aggregate(aggregate)
         {
             // Scene Constructor Implementation
-            for (const auto &light : lights)
+            /*for (const auto &light : lights)
             {
                 light->preprocess(*this);
-            }
+            }*/
         }
+        /*
         bool intersect(const Ray &ray, SurfaceInteraction *isect) const
         {
             return aggregate->intersect(ray,isect);
         }
+        */
         bool intersectP(const Ray &ray) const
         {
             return aggregate->intersectP(ray);
         }
-        bool intersectTr(Ray ray, Sampler &sampler, SurfaceInteraction *isect,Spectrum *transmittance) const
+        /*bool intersectTr(Ray ray, Sampler &sampler, SurfaceInteraction *isect,Spectrum *transmittance) const
         {
 
-        }
+        }*/
 
 		int progress;
         std::vector<std::shared_ptr<Light> > lights;
