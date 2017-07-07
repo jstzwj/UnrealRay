@@ -23,16 +23,20 @@ namespace unreal
     public:
         SamplerIntegrator(std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : camera(camera), sampler(sampler) { }
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const;
         virtual void render(const Scene &scene) override
         {
             // Render image
+            Film *film=camera->film;
+            Bounds2i filmBound=film->getFilmBounds();
+            for(Point2i pixel:filmBound)
             {
-                Film *film=camera->film;
                 while(sampler->startNextSample())
                 {
+                    Sample sample=sampler->getSample(pixel);
                     // Generate camera ray for current sample
                     Ray ray;
-                    double rayWeight =camera->generateRay(*sampler, &ray);
+                    double rayWeight =camera->generateRay(sample, &ray);
 
                     // Evaluate radiance along camera ray
                     Spectrum L(0.0);
@@ -47,7 +51,7 @@ namespace unreal
                         L = Spectrum(0.0);
                     }*/
                     // Add camera ray's contribution to image
-                    film->addSample(*sample,ray, L, rayWeight);
+                    film->addSample(sample,ray, L, rayWeight);
                 }
             }
             // Save final image after rendering
@@ -66,7 +70,7 @@ namespace unreal
         // WhittedIntegrator Public Methods
         WhittedIntegrator(int maxDepth, std::shared_ptr<const Camera> camera,std::shared_ptr<Sampler> sampler)
             : SamplerIntegrator(camera, sampler), maxDepth(maxDepth) {}
-        Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const override
         {
 
         }

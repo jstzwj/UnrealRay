@@ -9,6 +9,7 @@
 #include"Sampler.h"
 #include"Filter.h"
 #include"Spectrum.h"
+#include"Bounds.h"
 
 namespace unreal
 {
@@ -25,6 +26,8 @@ namespace unreal
         //<Film Interface>
         virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, Float alpha=1.0f) = 0;
         virtual void writeImage() = 0;
+        Bounds2i getFilmBounds() const
+        {return Bounds2i(Point2i(0,0),Point2i(xResolution,yResolution));}
         //<Film Interface> +=
         /*virtual void getSampleExtent(int *xstart , int *xend,int *ystart , int *yend) const = 0;*/
 
@@ -101,7 +104,7 @@ namespace unreal
         int  xPixelStart, xPixelCount, yPixelStart, yPixelCount;
 
         std::vector<Pixel> pixels;
-        std::vector<double> filterTable;
+        std::vector<Float> filterTable;
     };
 
 }

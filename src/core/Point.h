@@ -27,6 +27,16 @@ namespace unreal
         Point2<T> operator*(T n) { return Point2<T>(x * n, y * n); }
         Point2<T> operator/(T n) { return Point2<T>(x / n, y / n); }
 
+
+        Point2<T> operator+(const Point2<T>& n)
+        {
+            return Point2<T>(x + n.x, y + n.y);
+        }
+        Point2<T> operator-(const Point2<T>& n)
+        {
+            return Point2<T>(x - n.x, y - n.y);
+        }
+
         Point2<T> & operator+=(T n)
 		{
 			x += n;
@@ -51,6 +61,17 @@ namespace unreal
 			y /= n;
 			return *this; 
 		}
+
+        bool operator ==(const Point2<T>& n)const
+        {
+            return x==n.x&&y==n.y;
+        }
+
+        bool operator !=(const Point2<T>& n)const
+        {
+            return x!=n.x||y!=n.y;
+        }
+
 		//Some useful functions
         void move(T x, T y)
 		{
@@ -82,6 +103,17 @@ namespace unreal
         Point3<T> operator*(T n) { return Point3<T>(x * n, y * n, z * n); }
         Point3<T> operator/(T n) { return Point3<T>(x / n, y / n, z / n); }
 
+        Point3<T> operator+(const Point3<T>& n)
+        {
+            return Point3<T>(x + n.x, y + n.y,z+n.z);
+        }
+        Point3<T> operator-(const Point3<T>& n)
+        {
+            return Point3<T>(x - n.x, y - n.y,z-n.z);
+        }
+
+
+
         Point3<T> & operator+=(T n)
         {
             x += n;
@@ -110,6 +142,16 @@ namespace unreal
             z /= n;
             return *this;
         }
+
+        bool operator ==(const Point3<T>& n)const
+        {
+            return x==n.x&&y==n.y&&z==n.z;
+        }
+        bool operator !=(const Point3<T>& n)const
+        {
+            return x!=n.x||y!=n.y||z!=n.z;
+        }
+
         //Some useful functions
         void move(T x, T y, T z)
         {

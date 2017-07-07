@@ -11,8 +11,13 @@ namespace unreal
     public:
         Unreal()
         {
-            scene=new Scene();
-            integrator=new SamplerIntegrator();
+            GridAccel * aggregate=new GridAccel();
+            std::vector<std::shared_ptr<Light>> v_light;
+            scene=new Scene(aggregate,v_light);
+
+            OrthoCamera * camera=new OrthoCamera();
+            Sampler * sampler=new Sampler();
+            integrator=new SamplerIntegrator(camera,sampler);
         }
         void render()
         {

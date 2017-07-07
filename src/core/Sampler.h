@@ -13,7 +13,7 @@ namespace unreal
 {
     struct Sample
     {
-        Float imageX,imageY;
+        Point2f pFilm;
         Float time;
     };
 
@@ -23,6 +23,14 @@ namespace unreal
         // Sampler Interface
         virtual ~Sampler()=default;
         Sampler(int64_t samplesPerPixel):samplesPerPixel(samplesPerPixel) {}
+        Sample getSample(const Point2i &pRaster)
+        {
+            Sample cs;
+            cs.pFilm = (Point2f)pRaster + get2D();
+            cs.time = get1D();
+            return cs;
+        }
+
         virtual void startPixel(const Point2i &p)
         {
             currentPixel = p;

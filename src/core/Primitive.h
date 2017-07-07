@@ -107,6 +107,13 @@ namespace unreal
     {
     public:
         //<Aggregate Public Methods>
+
+    };
+
+    class GridAccel:public Aggregate
+    {
+    public:
+
     };
 
 

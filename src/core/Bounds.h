@@ -3,6 +3,7 @@
 
 #include<limits>
 #include<ostream>
+#include <iterator>
 
 #include"Point.h"
 #include"Vector.h"
@@ -153,6 +154,116 @@ namespace unreal
     typedef Bounds2<int> Bounds2i;
     typedef Bounds3<Float> Bounds3f;
     typedef Bounds3<int> Bounds3i;
+
+
+    class Bounds2iIterator : public std::forward_iterator_tag
+    {
+    public:
+        Bounds2iIterator(const Bounds2i &b, const Point2i &pt)
+            : p(pt), bounds(&b) {}
+        Bounds2iIterator operator++()
+        {
+            advance();
+            return *this;
+        }
+        Bounds2iIterator operator++(int)
+        {
+            Bounds2iIterator old = *this;
+            advance();
+            return old;
+        }
+        bool operator==(const Bounds2iIterator &bi) const
+        {
+            return p == bi.p && bounds == bi.bounds;
+        }
+        bool operator!=(const Bounds2iIterator &bi) const
+        {
+            return p != bi.p || bounds != bi.bounds;
+        }
+
+        Point2i operator *() const { return p; }
+
+      private:
+        void advance()
+        {
+            ++p.x;
+            if (p.x <= bounds->pMax.x)
+            {
+                p.x = bounds->pMin.x;
+                ++p.y;
+            }
+        }
+        Point2i p;
+        const Bounds2i *bounds;
+    };
+    inline Bounds2iIterator begin(const Bounds2i &b)
+    {
+        return Bounds2iIterator(b, b.pMin);
+    }
+
+    inline Bounds2iIterator end(const Bounds2i &b)
+    {
+        return Bounds2iIterator(b, Point2i(b.pMin.x, b.pMax.y));
+    }
+
+
+
+    class Bounds3iIterator : public std::forward_iterator_tag
+    {
+    public:
+        Bounds3iIterator(const Bounds3i &b, const Point3i &pt)
+            : p(pt), bounds(&b) {}
+        Bounds3iIterator operator++()
+        {
+            advance();
+            return *this;
+        }
+        Bounds3iIterator operator++(int)
+        {
+            Bounds3iIterator old = *this;
+            advance();
+            return old;
+        }
+        bool operator==(const Bounds3iIterator &bi) const
+        {
+            return p == bi.p && bounds == bi.bounds;
+        }
+        bool operator!=(const Bounds3iIterator &bi) const
+        {
+            return p != bi.p || bounds != bi.bounds;
+        }
+
+        Point3i operator *() const { return p; }
+
+      private:
+        void advance()
+        {
+            ++p.x;
+            if (p.x == bounds->pMax.x)
+            {
+                p.x = bounds->pMin.x;
+                ++p.y;
+                if(p.y==bounds->pMax.y)
+                {
+                    p.y = bounds->pMin.y;
+                    ++p.z;
+                }
+            }
+        }
+        Point3i p;
+        const Bounds3i *bounds;
+    };
+
+    inline Bounds3iIterator begin(const Bounds3i &b)
+    {
+        return Bounds3iIterator(b, Point3i(b.pMin.x, b.pMin.y, b.pMin.z));
+    }
+
+    inline Bounds3iIterator end(const Bounds3i &b)
+    {
+        return Bounds3iIterator(b, Point3i(b.pMin.x, b.pMin.y, b.pMax.y));
+    }
+
 
 }
 #endif // BOUNDS_H
