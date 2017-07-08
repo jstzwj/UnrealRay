@@ -2,15 +2,14 @@
 #define INTERACTION_H
 #include"Point.h"
 #include"Normal.h"
-#include"Shape.h"
-#include"Primitive.h"
+//#include"Shape.h"
+//#include"Primitive.h"
 #include"Spectrum.h"
 
 namespace unreal
 {
 
-    class Shape;
-    class Primitive;
+
     class Interaction
     {
     public:
@@ -35,16 +34,16 @@ namespace unreal
         SurfaceInteraction()=default;
         SurfaceInteraction(const Point3f &p, const Vector3f &wo,
                            const Vector3f &dpdu, const Vector3f &dpdv,
-                           const Normal3f &dndu, const Normal3f &dndv, Float time,
-                           const Shape *sh);
+                           const Normal3f &dndu, const Normal3f &dndv, Float time);
         Spectrum Le(const Vector3f &w) const;
 
         // SurfaceInteraction Public Data
+        Point2f uv;
         Vector3f dpdu, dpdv;
         Normal3f dndu, dndv;
 
-        const Shape *shape = nullptr;
-        const Primitive *primitive = nullptr;
+        //const Shape *shape = nullptr;
+        //const Primitive *primitive = nullptr;
         Vector3f dpdx, dpdy;
         Float dudx = 0, dvdx = 0, dudy = 0, dvdy = 0;
     };

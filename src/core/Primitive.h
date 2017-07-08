@@ -9,6 +9,7 @@
 #include"Ray.h"
 #include"Transform.h"
 #include"Interaction.h"
+#include"Shape.h"
 
 
 namespace unreal
@@ -33,7 +34,7 @@ namespace unreal
         {
             Float tHit;
             if (!shape->intersect(r, &tHit, isect)) return false;
-            isect->primitive = this;
+            //isect->primitive = this;
             return true;
         }
         virtual bool intersectP (const Ray &r) const override

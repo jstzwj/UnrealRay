@@ -23,35 +23,35 @@ namespace unreal
         /*explicit Vector(const Normal &n)
                :x(n.x), y(n.y), z(n.z) { }*/
         //Some operators
-        Vector2<T> operator + (const Vector2<T> & rhs)
+        Vector2<T> operator + (const Vector2<T> & rhs) const
         {
             return Vector2<T>(this->x + rhs.x, this->y + rhs.y);
         }
-        Vector2<T> operator + (T rhs)
+        Vector2<T> operator + (T rhs) const
         {
             return Vector2<T>(this->x + rhs, this->y + rhs);
         }
-        Vector2<T> operator - (const Vector2<T> & rhs)
+        Vector2<T> operator - (const Vector2<T> & rhs) const
         {
             return Vector2<T>(this->x - rhs.x, this->y - rhs.y);
         }
-        Vector2<T> operator - (T rhs)
+        Vector2<T> operator - (T rhs) const
         {
             return Vector2<T>(this->x - rhs, this->y - rhs);
         }
-        Vector2<T> operator * (const Vector2<T> & rhs)
+        Vector2<T> operator * (const Vector2<T> & rhs) const
         {
             return Vector2<T>(this->x * rhs.x, this->y * rhs.y);
         }
-        Vector2<T> operator * (T rhs)
+        Vector2<T> operator * (T rhs) const
         {
             return Vector2<T>(this->x * rhs, this->y * rhs);
         }
-        Vector2<T> operator / (const Vector2<T> & rhs)
+        Vector2<T> operator / (const Vector2<T> & rhs) const
         {
             return Vector2<T>(this->x / rhs.x, this->y / rhs.y);
         }
-        Vector2<T> operator / (T rhs)
+        Vector2<T> operator / (T rhs) const
         {
             return Vector2<T>(this->x / rhs, this->y / rhs);
         }
@@ -92,11 +92,11 @@ namespace unreal
             return *this;
         }
 
-        Vector2<T> operator-()
+        Vector2<T> operator-() const
         {
             return Vector2<T>(-x, -y);
         }
-        Vector2<T> operator+()
+        Vector2<T> operator+() const
         {
             return Vector2<T>(*this);
         }
@@ -153,35 +153,35 @@ namespace unreal
         /*explicit Vector3<T>(const Normal &n)
                :x(n.x), y(n.y), z(n.z) { }*/
 		//Some operators
-        Vector3<T> operator + (const Vector3<T> & rhs)
+        Vector3<T> operator + (const Vector3<T> & rhs) const
 		{
             return Vector3<T>(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z);
 		}
-        Vector3<T> operator + (T rhs)
+        Vector3<T> operator + (T rhs) const
 		{
             return Vector3<T>(this->x + rhs, this->y + rhs, this->z + rhs);
 		}
-        Vector3<T> operator - (const Vector3<T> & rhs)
+        Vector3<T> operator - (const Vector3<T> & rhs) const
 		{
             return Vector3<T>(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z);
 		}
-        Vector3<T> operator - (T rhs)
+        Vector3<T> operator - (T rhs) const
 		{
             return Vector3<T>(this->x - rhs, this->y - rhs, this->z - rhs);
 		}
-        Vector3<T> operator * (const Vector3<T> & rhs)
+        Vector3<T> operator * (const Vector3<T> & rhs) const
 		{
             return Vector3<T>(this->x * rhs.x, this->y * rhs.y, this->z * rhs.z);
 		}
-        Vector3<T> operator * (T rhs)
+        Vector3<T> operator* (T rhs) const
 		{
-            return Vector3<T>(this->x * rhs, this->y * rhs, this->z * rhs);
+            return Vector3<T>(x * rhs, y * rhs, z * rhs);
 		}
-        Vector3<T> operator / (const Vector3<T> & rhs)
+        Vector3<T> operator / (const Vector3<T> & rhs) const
 		{
             return Vector3<T>(this->x / rhs.x, this->y / rhs.y, this->z / rhs.z);
 		}
-        Vector3<T> operator / (T rhs)
+        Vector3<T> operator / (T rhs) const
 		{
             return Vector3<T>(this->x / rhs, this->y / rhs, this->z / rhs);
 		}
