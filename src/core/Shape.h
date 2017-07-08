@@ -3,6 +3,7 @@
 #include<vector>
 #include<stdexcept>
 #include<cmath>
+#include"Type.h"
 #include"Matrix.h"
 #include"Ray.h"
 #include"Transform.h"
@@ -11,6 +12,8 @@
 
 namespace unreal
 {
+
+    class SurfaceInteraction;
     class Shape
     {
     private:
@@ -22,18 +25,10 @@ namespace unreal
                 reverseOrientation(reverseOrientation),transformSwapsHandedness(ObjectToWorld.swapsHandedness()) {}
            virtual ~Shape()=default;
 
-           /*virtual bool intersect(const Ray &ray, double *tHit,SurfaceInteraction *isect,bool testAlphaTexture = true) const = 0;*/
-           virtual bool intersectP(const Ray &ray,bool testAlphaTexture = true) const {
-               /*return intersect(ray, nullptr, nullptr, testAlphaTexture);*/
+           virtual bool intersect(const Ray &ray, Float *tHit,SurfaceInteraction *isect) const = 0;
+           virtual bool intersectP(const Ray &ray) const {
+               return intersect(ray, nullptr, nullptr);
            }
-           /*
-           virtual double area() const = 0;
-           virtual Interaction sample(const Point2f &u) const = 0;
-           virtual double Pdf(const Interaction &) const { return 1 / area(); }
-           virtual Interaction sample(const Interaction &ref, const Point2f &u) const {
-               return sample(u);
-           }
-           */
     };
     /*
     class Sphere : public Shape

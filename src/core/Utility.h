@@ -57,6 +57,22 @@ namespace unreal
     }
 
     inline Float lerp(Float t, Float v1, Float v2) { return (1 - t) * v1 + t * v2; }
+
+
+    inline Float distance(const Point2f &m,const Point2f &n)
+    {
+        Float x=m.x-n.x;
+        Float y=m.y-n.y;
+        return std::sqrt(x*x+y*y);
+    }
+
+    inline Float distance(const Point3f &m,const Point3f &n)
+    {
+        Float x=m.x-n.x;
+        Float y=m.y-n.y;
+        Float z=m.z-n.z;
+        return std::sqrt(x*x+y*y+z*z);
+    }
 }
 
 #endif // UTILITY_H

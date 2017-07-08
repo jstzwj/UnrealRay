@@ -68,7 +68,7 @@ namespace unreal
     {
       public:
         // WhittedIntegrator Public Methods
-        WhittedIntegrator(int maxDepth, std::shared_ptr<const Camera> camera,std::shared_ptr<Sampler> sampler)
+        WhittedIntegrator(int maxDepth, std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : SamplerIntegrator(camera, sampler), maxDepth(maxDepth) {}
         virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const override
         {

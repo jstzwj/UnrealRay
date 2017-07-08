@@ -48,7 +48,8 @@ HEADERS  += mainwindow.h \
     core/Sampler.h \
     core/Shape.h \
     core/Bounds.h \
-    core/Type.h
+    core/Type.h \
+    core/Interaction.h
 
 FORMS    += mainwindow.ui
 
