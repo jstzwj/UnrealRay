@@ -7,7 +7,6 @@
 
 #include"Transform.h"
 #include"Spectrum.h"
-#include"Scene.h"
 #include"Point.h"
 #include"Primitive.h"
 #include"Utility.h"

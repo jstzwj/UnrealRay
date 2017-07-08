@@ -9,6 +9,7 @@
 #include"Primitive.h"
 #include"Spectrum.h"
 
+
 namespace unreal
 {
 	class Scene
