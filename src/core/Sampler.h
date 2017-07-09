@@ -98,6 +98,11 @@ namespace unreal
         // Sampler Private Data
         size_t array1DOffset, array2DOffset;
 	};
+    class AverageSampler:public Sampler
+    {
+    public:
+
+    };
 
 }
 
