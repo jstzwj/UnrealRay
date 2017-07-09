@@ -115,6 +115,15 @@ namespace unreal
             }
             return result;
         }
+        static Matrix4x4 eye()
+        {
+            Matrix4x4 rst;
+            for(int i=0;i<4;++i)
+            {
+                rst.data[i][i]=1;
+            }
+            return rst;
+        }
     };
 }
 

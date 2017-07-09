@@ -29,15 +29,22 @@ namespace unreal
     public:
         Unreal()
         {
-            std::vector<std::shared_ptr<Primitive>> shapes;
-            shapes.push_back(new Sphere());
-            GridAccel * aggregate=new GridAccel();
-            std::vector<std::shared_ptr<Light>> v_light;
-            scene=new Scene(aggregate,v_light);
 
-            OrthoCamera * camera=new OrthoCamera();
-            Sampler * sampler=new Sampler();
-            integrator=new SamplerIntegrator(camera,sampler);
+            std::shared_ptr<Shape> sphere_shape(new Sphere(Transform::eye(),false,0.5f,-0.5f,0.5f,360));
+            std::shared_ptr<Primitive> sphere_primitive(new GeometricPrimitive(sphere_shape));
+            std::vector<std::shared_ptr<Primitive>> shapes;
+            shapes.push_back(sphere_primitive);
+
+            std::shared_ptr<Primitive> aggregate(new GridAccel(shapes));
+            std::vector<std::shared_ptr<Light>> v_light;
+            scene=std::shared_ptr<Scene>(new Scene(aggregate,v_light));
+
+
+            std::shared_ptr<Film> film(new ImageFilm({500,500},""));
+            std::shared_ptr<OrthoCamera> camera(new OrthoCamera(Transform::eye(),Bounds2f({-1,-1},{1,1}),0,0,0,10,film));
+            std::shared_ptr<Sampler> sampler(new Sampler());
+            integrator=std::shared_ptr<SamplerIntegrator>(new SamplerIntegrator(camera,sampler));
+
         }
         void render()
         {

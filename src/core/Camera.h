@@ -2,6 +2,8 @@
 #ifndef UNREALRAY_CAMERA
 #define UNREALRAY_CAMERA
 
+#include<memory>
+
 #include"Sampler.h"
 #include"Ray.h"
 #include"Transform.h"
@@ -15,7 +17,7 @@ namespace unreal
 	class Camera
 	{
 	public:
-        Camera(const Transform &CameraToWorld, Float shutterOpen,Float shutterClose, Film *film)
+        Camera(const Transform &CameraToWorld, Float shutterOpen,Float shutterClose, std::shared_ptr<Film> film)
             :WorldToCamera(CameraToWorld.getInverse()),CameraToWorld(WorldToCamera),
               shutterOpen(shutterOpen),shutterClose(shutterClose),
               film(film){}
@@ -26,7 +28,7 @@ namespace unreal
 		Transform WorldToCamera, CameraToWorld;
         //double clipHither, clipYon;   // Hither: ½üµÄ£» Yon:Ô¶µÄ
         Float shutterOpen, shutterClose;
-        Film * film;
+        std::shared_ptr<Film> film;
 	};
     class ProjectiveCamera : public Camera
     {
@@ -35,7 +37,7 @@ namespace unreal
     ProjectiveCamera(const Transform &CameraToWorld,
                      const Transform &CameraToScreen,
                      const Bounds2f &screenWindow, Float shutterOpen,Float shutterClose,
-                     Float lensr, Float focald, Film *film)
+                     Float lensr, Float focald, std::shared_ptr<Film> film)
        : Camera(CameraToWorld, shutterOpen, shutterClose, film),CameraToScreen(CameraToScreen)
     {
         // Initialize depth of field parameters
@@ -46,7 +48,7 @@ namespace unreal
 
         // Compute projective camera screen transformations
         ScreenToRaster =
-            Transform::scale(film->xResolution, film->yResolution, 1) *
+            Transform::scale(film->fullResolution.x, film->fullResolution.y, 1) *
             Transform::scale(1 / (screenWindow.pMax.x - screenWindow.pMin.x),
                   1 / (screenWindow.pMin.y - screenWindow.pMax.y), 1) *
             Transform::translate(Vector3f(-screenWindow.pMin.x, -screenWindow.pMax.y, 0));
@@ -67,7 +69,7 @@ namespace unreal
         OrthoCamera(const Transform &CameraToWorld,
                                const Bounds2f &screenWindow, Float shutterOpen,
                                Float shutterClose, Float lensRadius, Float focalDistance,
-                                Film *film)
+                                std::shared_ptr<Film> film)
             : ProjectiveCamera(CameraToWorld, orthographic(0, 1),
                     screenWindow, shutterOpen, shutterClose,
                                lensRadius, focalDistance, film){}

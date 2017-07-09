@@ -49,7 +49,8 @@ HEADERS  += mainwindow.h \
     core/Shape.h \
     core/Bounds.h \
     core/Type.h \
-    core/Interaction.h
+    core/Interaction.h \
+    core/Camera.h
 
 FORMS    += mainwindow.ui
 

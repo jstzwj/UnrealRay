@@ -27,7 +27,7 @@ namespace unreal
         virtual void render(const Scene &scene) override
         {
             // Render image
-            Film *film=camera->film;
+            auto film=camera->film;
             Bounds2i filmBound=film->getFilmBounds();
             for(Point2i pixel:filmBound)
             {

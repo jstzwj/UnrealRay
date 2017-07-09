@@ -135,6 +135,15 @@ namespace unreal
             return Transform(other.mInv, other.m);
         }
 
+        static Transform eye()
+        {
+            Transform rst;
+            rst.m=Matrix4x4::eye();
+            rst.mInv=Matrix4x4::eye();
+            return rst;
+        }
+
+
         Point3f transform(const Point3f &pt) const
         {
             Float x = pt.x, y = pt.y, z = pt.z;
