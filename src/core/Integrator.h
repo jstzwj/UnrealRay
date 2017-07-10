@@ -40,20 +40,19 @@ namespace unreal
                     Sample sample=sampler->getSample(pixel);
                     // Generate camera ray for current sample
                     Ray ray;
-                    double rayWeight =camera->generateRay(sample, &ray);
+                    Float rayWeight =camera->generateRay(sample, &ray);
 
                     // Evaluate radiance along camera ray
-                    Spectrum L(0.0);
-                    if (rayWeight > 0) L = li(ray, scene, *sampler);
+                    Spectrum L(0.0f);
+                    //if (rayWeight > 0) L = li(ray, scene, *sampler);
 
-                    // Issue warning if unexpected radiance value returned
-                    /*if (L.isNaN()) {
-                        L = Spectrum(0.0);
-                    } else if (L.y() < -1e-5) {
-                        L = Spectrum(0.0);
-                    } else if (std::isinf(L.y())) {
-                        L = Spectrum(0.0);
-                    }*/
+                    //如果相交
+                    SurfaceInteraction isect;
+                    if(scene.intersect(ray,&isect))
+                    {
+                        L=Spectrum(0.5f);
+                    }
+
                     // Add camera ray's contribution to image
                     film->addSample(sample,L, rayWeight);
                 }while(sampler->startNextSample());

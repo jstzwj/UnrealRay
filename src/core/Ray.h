@@ -29,7 +29,7 @@ namespace unreal
         Point3f getPoint(Float d)
         {
             Vector3f normal_v=direction.normalize();
-            return Point3f(d*normal_v.x,d*normal_v.y,d*normal_v.z);
+            return Point3f(origin.x+d*normal_v.x,origin.y+d*normal_v.y,origin.z+d*normal_v.z);
         }
 
         Point3f operator[](Float d)

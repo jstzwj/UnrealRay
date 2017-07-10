@@ -13,7 +13,17 @@ namespace unreal
     public:
         Float data[4][4];
     public:
-        Matrix4x4()=default;
+        Matrix4x4()
+        {
+            for(int i=0;i<4;++i)
+            {
+                for(int j=0;j<4;++j)
+                {
+                    data[i][j]=Float();
+                }
+            }
+        }
+
         Matrix4x4(Float * mat)
         {
             std::memcpy(data,mat,16*sizeof(Float));
@@ -103,13 +113,13 @@ namespace unreal
             {
                 for (int j = 0; j < 4; ++j)//a col
                 {
-                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<Float>::epsilon())
+                    if (std::abs(a[i*4 + j]) <= std::numeric_limits<Float>::epsilon())
                     {
                         continue;
                     }
                     for (int k = 0; k < 4; ++k)//b col
                     {
-                        result[k*4 + i] += a[j*4 + i] * b[k*4 + j];
+                        result[i*4 + k] += a[i*4 + j] * b[j*4 + k];
                     }
                 }
             }

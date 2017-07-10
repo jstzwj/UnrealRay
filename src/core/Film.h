@@ -114,9 +114,9 @@ namespace unreal
             {
                 for(int x=xPixelStart;x<xPixelStart+xPixelCount;++x)
                 {
-                    Float xyz[3];
-                    pixels[y*xPixelCount+x].L.XYZ(xyz);
-                    img.setPixelColor(QPoint(x,y),QColor::fromRgbF(qreal(xyz[0]),qreal(xyz[1]),qreal(xyz[2])) );
+                    Float rgb[3];
+                    pixels[y*xPixelCount+x].L.ToRGB(rgb);
+                    img.setPixelColor(QPoint(x,y),QColor::fromRgbF(qreal(rgb[0]),qreal(rgb[1]),qreal(rgb[2])) );
                 }
             }
         }

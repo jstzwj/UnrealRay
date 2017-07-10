@@ -71,7 +71,7 @@ namespace unreal
         {
             // Reset array offsets for next pixel sample
             array1DOffset = array2DOffset = 0;
-            return ++currentPixelSampleIndex <= samplesPerPixel;
+            return ++currentPixelSampleIndex < samplesPerPixel;
         }
         //virtual std::unique_ptr<Sampler> clone(int seed) = 0;
         virtual bool setSampleNumber(int64_t sampleNum)

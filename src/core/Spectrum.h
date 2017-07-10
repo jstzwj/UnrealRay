@@ -99,7 +99,19 @@ namespace unreal
                 if(std::isnan(c[ i ])) return false;
             return true;
         }
-        void XYZ(Float xyz[3]) const
+        void ToRGB(Float rgb[3]) const
+        {
+            Float xyz[3];
+            ToXYZ(xyz);
+            XYZToRGB(xyz, rgb);
+        }
+        static void XYZToRGB(const Float xyz[3], Float rgb[3])
+        {
+            rgb[0] = 3.240479f * xyz[0] - 1.537150f * xyz[1] - 0.498535f * xyz[2];
+            rgb[1] = -0.969256f * xyz[0] + 1.875991f * xyz[1] + 0.041556f * xyz[2];
+            rgb[2] = 0.055648f * xyz[0] - 0.204043f * xyz[1] + 1.057311f * xyz[2];
+        }
+        void ToXYZ(Float xyz[3]) const
         {
             xyz[0] = xyz[1] = xyz[2] = 0.f;
             for(int i = 0; i < COLOR_SAMPLES; ++i)

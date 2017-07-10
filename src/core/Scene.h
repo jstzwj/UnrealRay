@@ -25,12 +25,12 @@ namespace unreal
                 light->preprocess(*this);
             }*/
         }
-        /*
+
         bool intersect(const Ray &ray, SurfaceInteraction *isect) const
         {
             return aggregate->intersect(ray,isect);
         }
-        */
+
         bool intersectP(const Ray &ray) const
         {
             return aggregate->intersectP(ray);

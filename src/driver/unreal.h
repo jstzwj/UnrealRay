@@ -32,7 +32,7 @@ namespace unreal
         Unreal()
         {
 
-            std::shared_ptr<Shape> sphere_shape(new Sphere(Transform::eye(),false,0.5f,-0.5f,0.5f,360));
+            std::shared_ptr<Shape> sphere_shape(new Sphere(Transform::eye(),false,5.0f,-5.0f,5.0f,360));
             std::shared_ptr<Primitive> sphere_primitive(new GeometricPrimitive(sphere_shape));
             std::vector<std::shared_ptr<Primitive>> shapes;
             shapes.push_back(sphere_primitive);
@@ -43,7 +43,8 @@ namespace unreal
 
 
             std::shared_ptr<Film> film(new QImageFilm({500,500},""));
-            std::shared_ptr<OrthoCamera> camera(new OrthoCamera(Transform::eye(),Bounds2f({-1,-1},{1,1}),0,0,0,10,film));
+            Transform look({1,0,0,0,  0,1,0,0, 0,0,10,0, 0,0,0,1});
+            std::shared_ptr<OrthoCamera> camera(new OrthoCamera(look,Bounds2f({0,0},{1,1}),0,0,0,10,film));
             std::shared_ptr<Sampler> sampler(new AverageSampler(1));
             integrator=std::shared_ptr<SamplerIntegrator>(new SamplerIntegrator(camera,sampler));
 
