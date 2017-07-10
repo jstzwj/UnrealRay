@@ -16,17 +16,17 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
+    engine.render();
+    Film * film=&*engine.integrator->camera->film;
+    film->writeImage();
+    QImage qimg=dynamic_cast<QImageFilm *>(film)->getImage();
+
 
     QPainter painter(this);
-
-    QImage img;
-    Film<QImage> film(img);
-    scene.setFilm(film);
-    scene.render();
 
     // 反走样
     painter.setRenderHint(QPainter::Antialiasing, true);
 
      // 绘制图标
-     painter.drawPixmap(rect(), QPixmap::fromImage(film.getData()));
+     painter.drawPixmap(rect(), QPixmap::fromImage(qimg));
 }

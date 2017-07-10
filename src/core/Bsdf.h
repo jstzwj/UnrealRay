@@ -60,7 +60,7 @@ namespace unreal
     {
     public:
         //const DifferentialGeometry dgShading;
-        const Float eta;
+        const Float eta=0.0f;
     private:
         Normal3f nn, ng;
         Vector3f sn, tn;

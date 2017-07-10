@@ -23,7 +23,7 @@ namespace unreal
             : fullResolution(res)
         {}
         //<Film Interface>
-        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, Float alpha=1.0f) = 0;
+        virtual void addSample(const Sample &sample, const Spectrum &L, Float sampleWeight=1.0f) = 0;
         virtual void writeImage() = 0;
         Bounds2i getFilmBounds() const
         {return Bounds2i(Point2i(0,0),fullResolution);}
@@ -38,13 +38,13 @@ namespace unreal
 
     struct Pixel
     {
-        Pixel () : L(0.f)
+        Pixel () : L(0.0f)
         {
-            alpha = 0.f;
-            weightSum =0.f;
+            alpha = 0.0f;
+            weightSum =0.0f;
         }
         Spectrum L;
-        double alpha, weightSum;
+        Float alpha, weightSum;
     };
 
     class ImageFilm : public Film
@@ -65,7 +65,7 @@ namespace unreal
             //<Allocate film image storage>
             pixels = std::vector<Pixel>(xPixelCount*yPixelCount);
         }
-        virtual void addSample(const Sample &sample, const Ray &ray,const Spectrum &L, Float alpha=1.0f)override
+        virtual void addSample(const Sample &sample,const Spectrum &L, Float sampleWeight=1.0f)override
         {
                 //<Compute sample's raster extent>
                 //<Loop over filter support and add sample to pixel arrays>
@@ -84,6 +84,53 @@ namespace unreal
 
         std::vector<Pixel> pixels;
         std::vector<Float> filterTable;
+    };
+
+    class QImageFilm : public Film
+    {
+    public:
+            //< ImageFilm public Method>
+        QImageFilm(const Point2i& res,const std::string &fn)
+           : Film(res)
+        {
+            filename = fn;
+
+            xPixelStart = 0;
+            xPixelCount = fullResolution.x;
+            yPixelStart = 0;
+            yPixelCount = fullResolution.y;
+
+            pixels = std::vector<Pixel>(xPixelCount*yPixelCount);
+        }
+        virtual void addSample(const Sample &sample,const Spectrum &L, Float sampleWeight=1.0f)override
+        {
+            int index=(int)sample.pFilm.x+(int)(sample.pFilm.y)*xPixelCount;
+            pixels[index].L+=L*sampleWeight;
+        }
+        virtual void writeImage()override
+        {
+            for(int y=yPixelStart;y<yPixelStart+yPixelCount;++y)
+            {
+                for(int x=xPixelStart;x<xPixelStart+xPixelCount;++x)
+                {
+                    Float xyz[3];
+                    pixels[y*xPixelCount+x].L.XYZ(xyz);
+                    img.setPixelColor(QPoint(x,y),QColor::fromRgbF(qreal(xyz[0]),qreal(xyz[1]),qreal(xyz[2])) );
+                }
+            }
+        }
+        QImage getImage()
+        {
+            return img;
+        }
+    private:
+        std::string filename;
+        //Float cropWindow[4];
+
+        int  xPixelStart, xPixelCount, yPixelStart, yPixelCount;
+        std::vector<Pixel> pixels;
+        QImage img;
+        //std::vector<Float> filterTable;
     };
 
 }

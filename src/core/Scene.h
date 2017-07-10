@@ -39,12 +39,12 @@ namespace unreal
         {
 
         }*/
-
+    public:
 		int progress;
         std::vector<std::shared_ptr<Light> > lights;
         std::shared_ptr<Primitive> aggregate;
 		
-	public:
+
 	};
 }
 

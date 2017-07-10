@@ -17,9 +17,9 @@ namespace unreal
 	class Primitive
 	{
 	public:
-		Primitive();
-		~Primitive();
-        virtual bool canIntersect() const;
+        Primitive()=default;
+        virtual ~Primitive()=default;
+        virtual bool canIntersect() const{return true;}
         virtual bool intersect (const Ray &r,SurfaceInteraction *isect) const = 0 ;
         virtual bool intersectP (const Ray &r) const = 0 ;
 	};
@@ -27,7 +27,10 @@ namespace unreal
     class GeometricPrimitive : public Primitive
     {
     public:
-        GeometricPrimitive(const std::shared_ptr<Shape> &s);
+        GeometricPrimitive(const std::shared_ptr<Shape> &s)
+            :shape(s){}
+
+        virtual ~GeometricPrimitive()=default;
 
         virtual bool canIntersect() const override{return true;}
         virtual bool intersect (const Ray &r,SurfaceInteraction *isect) const override
@@ -54,6 +57,7 @@ namespace unreal
             InstanceToWorld = i2w;
             WorldToInstance = i2w.getInverse();
         }
+        virtual ~InstancePrimitive()=default;
     private:
         Primitive * instance;
         Transform InstanceToWorld, WorldToInstance;
@@ -62,13 +66,16 @@ namespace unreal
     {
     public:
         //<Aggregate Public Methods>
+        Aggregate()=default;
+        virtual ~Aggregate()=default;
 
     };
 
     class GridAccel:public Aggregate
     {
     public:
-        GridAccel(const std::vector<std::shared_ptr<Primitive>> &p);
+        GridAccel(const std::vector<std::shared_ptr<Primitive>> &p)
+            :primitives(p){}
         virtual ~GridAccel()=default;
 
         virtual bool canIntersect() const override{return true;}

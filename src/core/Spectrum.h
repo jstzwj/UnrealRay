@@ -101,7 +101,7 @@ namespace unreal
         }
         void XYZ(Float xyz[3]) const
         {
-            xyz[0] = xyz[1] = xyz[2] = 0.;
+            xyz[0] = xyz[1] = xyz[2] = 0.f;
             for(int i = 0; i < COLOR_SAMPLES; ++i)
             {
                 xyz[0] += XWeight[i] * c[i];

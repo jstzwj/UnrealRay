@@ -27,6 +27,8 @@ namespace unreal
     class Unreal
     {
     public:
+
+    public:
         Unreal()
         {
 
@@ -42,7 +44,7 @@ namespace unreal
 
             std::shared_ptr<Film> film(new ImageFilm({500,500},""));
             std::shared_ptr<OrthoCamera> camera(new OrthoCamera(Transform::eye(),Bounds2f({-1,-1},{1,1}),0,0,0,10,film));
-            std::shared_ptr<Sampler> sampler(new Sampler());
+            std::shared_ptr<Sampler> sampler(new AverageSampler(1));
             integrator=std::shared_ptr<SamplerIntegrator>(new SamplerIntegrator(camera,sampler));
 
         }

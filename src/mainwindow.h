@@ -20,7 +20,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    Scene scene;
+    Unreal engine;
 private:
     Ui::MainWindow *ui;
 };
