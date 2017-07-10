@@ -91,7 +91,7 @@ namespace unreal
     public:
             //< ImageFilm public Method>
         QImageFilm(const Point2i& res,const std::string &fn)
-           : Film(res)
+           : Film(res),img(res.x,res.y,QImage::Format_ARGB32)
         {
             filename = fn;
 
@@ -101,6 +101,7 @@ namespace unreal
             yPixelCount = fullResolution.y;
 
             pixels = std::vector<Pixel>(xPixelCount*yPixelCount);
+
         }
         virtual void addSample(const Sample &sample,const Spectrum &L, Float sampleWeight=1.0f)override
         {

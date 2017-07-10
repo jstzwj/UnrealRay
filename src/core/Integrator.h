@@ -34,7 +34,8 @@ namespace unreal
             Bounds2i filmBound=film->getFilmBounds();
             for(Point2i pixel:filmBound)
             {
-                while(sampler->startNextSample())
+                sampler->startPixel(pixel);
+                do
                 {
                     Sample sample=sampler->getSample(pixel);
                     // Generate camera ray for current sample
@@ -55,7 +56,7 @@ namespace unreal
                     }*/
                     // Add camera ray's contribution to image
                     film->addSample(sample,L, rayWeight);
-                }
+                }while(sampler->startNextSample());
             }
             // Save final image after rendering
             camera->film->writeImage();
