@@ -78,17 +78,36 @@ namespace unreal
         virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const override
         {
             SurfaceInteraction isect;
-            Spectrum L(0.f);
+            Spectrum L(0.0f);
             bool  hitSomething;
             hitSomething = scene.intersect(ray, &isect);
             if(!hitSomething)
             {
                 //<Handle ray with nointersection>
+                for ( const auto& each_light:scene.lights)
+                    L  +=  each_light.Le(ray);
+                //if(alpha && !L.Black()) *alpha = 1.;
+                return L;
             }
             else
             {
                 //<Initialize alpha for ray hit>
+                //if (alpha) *alpha = 1.0f;
+
                 //<Compute emitted and reflected light at ray intersection point>
+                //<Evaluate BSDF at hit point>
+                BSDF *bsdf = isect.getBSDF(ray);
+                //<Initialize common variables for Whitted integrator>
+                const Point3f &p = bsdf->dgShading.p;
+                const Normal3f &n = bsdf->dgShading.nn;
+                Vector3f wo = -ray.d;
+                //<Compute emitted light if ray hit an area light source>
+                //<Add contribution of each light source>
+                if (rayDepth++ <  maxDepth)
+                {
+                    //<Trace rays for specular reflection and refraction>
+                }
+                --rayDepth;
             }
            return L;
         }
