@@ -16,6 +16,7 @@ namespace unreal
     {
     public:
         Integrator()=default;
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const=0;
         virtual void render(const Scene &scene) = 0;
         virtual ~Integrator()=default;
     };
@@ -26,7 +27,7 @@ namespace unreal
         SamplerIntegrator(std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : Integrator(),camera(camera), sampler(sampler) { }
         virtual ~SamplerIntegrator()=default;
-        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const{}
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const=0;
         virtual void render(const Scene &scene) override
         {
             // Render image
@@ -50,7 +51,7 @@ namespace unreal
                     SurfaceInteraction isect;
                     if(scene.intersect(ray,&isect))
                     {
-                        L=Spectrum(0.5f);
+                        L=Spectrum(0.9f);
                     }
 
                     // Add camera ray's contribution to image
@@ -76,11 +77,25 @@ namespace unreal
         virtual ~WhittedIntegrator()=default;
         virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const override
         {
-
+            SurfaceInteraction isect;
+            Spectrum L(0.f);
+            bool  hitSomething;
+            hitSomething = scene.intersect(ray, &isect);
+            if(!hitSomething)
+            {
+                //<Handle ray with nointersection>
+            }
+            else
+            {
+                //<Initialize alpha for ray hit>
+                //<Compute emitted and reflected light at ray intersection point>
+            }
+           return L;
         }
       private:
         // WhittedIntegrator Private Data
         int maxDepth;
+        mutable int rayDepth;
     };
 }
 #endif // INTEGRATOR_H

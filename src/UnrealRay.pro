@@ -50,7 +50,8 @@ HEADERS  += mainwindow.h \
     core/Bounds.h \
     core/Type.h \
     core/Interaction.h \
-    core/Camera.h
+    core/Camera.h \
+    core/Bsdf.h
 
 FORMS    += mainwindow.ui
 

@@ -34,11 +34,17 @@ namespace unreal
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 c[ i ]= cs[ i ];
         }
-        Spectrum &operator += (const Spectrum &other)
+        Spectrum & operator += (const Spectrum &other)
         {
                 for (int i = 0; i < COLOR_SAMPLES; ++i)
                     c[ i ] += other.c[ i ];
                 return *this;
+        }
+        Spectrum & operator /= (Float other)
+        {
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                this->c[ i ]  /= other;
+            return *this;
         }
 
         Spectrum operator + (const Spectrum &other)  const
@@ -53,6 +59,13 @@ namespace unreal
             Spectrum ret = *this;
             for (int i = 0; i < 16; ++i)
                 ret.c[i] *= a;
+            return ret;
+        }
+        Spectrum operator / (Float other)  const
+        {
+            Spectrum ret = *this;
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                ret.c[ i ]  /= other;
             return ret;
         }
         void addWeighted(Float w, const Spectrum &s)

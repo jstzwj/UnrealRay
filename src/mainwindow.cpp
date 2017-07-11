@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->resize(500,500);
     engine.render();
     Film * film=&*engine.integrator->camera->film;
     film->writeImage();

@@ -95,8 +95,6 @@ namespace unreal
         virtual Spectrum rho(const Vector3f &wo, int nSamples = 16, Float *samples = nullptr) const;
         virtual Spectrum rho(int nSamples = 16, Float *samples = nullptr) const;
 
-
-
         //<BxDF Public Data>
         const BxDFType type;
     };

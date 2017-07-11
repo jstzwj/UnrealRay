@@ -41,10 +41,11 @@ namespace unreal
         Pixel () : L(0.0f)
         {
             alpha = 0.0f;
-            weightSum =0.0f;
+            weightSum =0;
         }
         Spectrum L;
-        Float alpha, weightSum;
+        Float alpha;
+        int weightSum;
     };
 
     class ImageFilm : public Film
@@ -107,6 +108,7 @@ namespace unreal
         {
             int index=(int)sample.pFilm.x+(int)(sample.pFilm.y)*xPixelCount;
             pixels[index].L+=L*sampleWeight;
+            ++pixels[index].weightSum;
         }
         virtual void writeImage()override
         {
@@ -115,7 +117,9 @@ namespace unreal
                 for(int x=xPixelStart;x<xPixelStart+xPixelCount;++x)
                 {
                     Float rgb[3];
-                    pixels[y*xPixelCount+x].L.ToRGB(rgb);
+                    Spectrum cur_spectrum=pixels[y*xPixelCount+x].L;
+                    cur_spectrum/=(Float)pixels[y*xPixelCount+x].weightSum;
+                    cur_spectrum.ToRGB(rgb);
                     img.setPixelColor(QPoint(x,y),QColor::fromRgbF(qreal(rgb[0]),qreal(rgb[1]),qreal(rgb[2])) );
                 }
             }
