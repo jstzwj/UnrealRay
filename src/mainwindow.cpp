@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    engine.render();
+    Film * film=&*engine.integrator->camera->film;
+    film->writeImage();
 }
 
 MainWindow::~MainWindow()
@@ -16,9 +19,7 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    engine.render();
     Film * film=&*engine.integrator->camera->film;
-    film->writeImage();
     QImage qimg=dynamic_cast<QImageFilm *>(film)->getImage();
 
 

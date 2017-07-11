@@ -22,17 +22,17 @@ namespace unreal
         }
 
 		//Some operators
-        Point2<T> operator+(T n) { return Point2<T>(x + n, y + n); }
-        Point2<T> operator-(T n) { return Point2<T>(x - n, y - n); }
-        Point2<T> operator*(T n) { return Point2<T>(x * n, y * n); }
-        Point2<T> operator/(T n) { return Point2<T>(x / n, y / n); }
+        Point2<T> operator+(T n)const { return Point2<T>(x + n, y + n); }
+        Point2<T> operator-(T n)const { return Point2<T>(x - n, y - n); }
+        Point2<T> operator*(T n)const { return Point2<T>(x * n, y * n); }
+        Point2<T> operator/(T n)const { return Point2<T>(x / n, y / n); }
 
 
-        Point2<T> operator+(const Point2<T>& n)
+        Point2<T> operator+(const Point2<T>& n)const
         {
             return Point2<T>(x + n.x, y + n.y);
         }
-        Point2<T> operator-(const Point2<T>& n)
+        Point2<T> operator-(const Point2<T>& n)const
         {
             return Point2<T>(x - n.x, y - n.y);
         }
@@ -98,16 +98,16 @@ namespace unreal
         }
 
         //Some operators
-        Point3<T> operator+(T n) { return Point3<T>(x + n, y + n, z + n); }
-        Point3<T> operator-(T n) { return Point3<T>(x - n, y - n, z - n); }
-        Point3<T> operator*(T n) { return Point3<T>(x * n, y * n, z * n); }
-        Point3<T> operator/(T n) { return Point3<T>(x / n, y / n, z / n); }
+        Point3<T> operator+(T n)const { return Point3<T>(x + n, y + n, z + n); }
+        Point3<T> operator-(T n)const { return Point3<T>(x - n, y - n, z - n); }
+        Point3<T> operator*(T n)const { return Point3<T>(x * n, y * n, z * n); }
+        Point3<T> operator/(T n)const { return Point3<T>(x / n, y / n, z / n); }
 
-        Point3<T> operator+(const Point3<T>& n)
+        Point3<T> operator+(const Point3<T>& n)const
         {
             return Point3<T>(x + n.x, y + n.y,z+n.z);
         }
-        Point3<T> operator-(const Point3<T>& n)
+        Point3<T> operator-(const Point3<T>& n)const
         {
             return Point3<T>(x - n.x, y - n.y,z-n.z);
         }
