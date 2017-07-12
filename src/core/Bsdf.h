@@ -71,14 +71,14 @@ namespace unreal
     enum BxDFType
     {
         BSDF_REFLECTION    = 1 << 0,
-        BSDF_TRASNMISSION    = 1 << 1,
+        BSDF_TRANSMISSION    = 1 << 1,
         BSDF_DIFFUSE        = 1 << 2,
         BSDF_GLOSSY        = 1 << 3,
         BSDF_SPECULAR    = 1 << 4,
         BSDF_ALL_TYPES = BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR,
         BSDF_ALL_REFLECTION = BSDF_REFLECTION | BSDF_ALL_TYPES,
-        BSDF_ALL_TRASNMISSION = BSDF_TRASNMISSION | BSDF_ALL_TYPES,
-        BSDF_ALL = BSDF_ALL_REFLECTION | BSDF_ALL_TRASNMISSION
+        BSDF_ALL_TRANSMISSION = BSDF_TRANSMISSION | BSDF_ALL_TYPES,
+        BSDF_ALL = BSDF_ALL_REFLECTION | BSDF_ALL_TRANSMISSION
    };
 
     class BxDF
@@ -91,12 +91,52 @@ namespace unreal
             return (type & flags) == type;
         }
         virtual Spectrum f(const Vector3f &wo, const Vector3f &wi) const = 0;
-        virtual Spectrum sample_f(const Vector3f &wo, Vector3f *wi, Float u1, Float u2, Float *pdf) const;
-        virtual Spectrum rho(const Vector3f &wo, int nSamples = 16, Float *samples = nullptr) const;
-        virtual Spectrum rho(int nSamples = 16, Float *samples = nullptr) const;
+        virtual Spectrum sample_f(const Vector3f &wo, /*out*/Vector3f *wi, const Point2f &sample, /*out*/Float *pdf) const
+        {
+
+        }
+        virtual Spectrum rho(const Vector3f &w, int nSamples, const Point2f *u) const
+        {
+            Spectrum r(0.f);
+            for (int i = 0; i < nSamples; ++i)
+            {
+                Vector3f wi;
+                Float pdf = 0.0f;
+                Spectrum f = sample_f(w, &wi, u[i], &pdf);
+                if (pdf > 0) r += f * AbsCosTheta(wi) / pdf;
+            }
+            return r / nSamples;
+        }
+        virtual Spectrum rho(int nSamples, const Point2f *u1, const Point2f *u2) const
+        {
+
+        }
 
         //<BxDF Public Data>
         const BxDFType type;
     };
+
+
+    class Lambertian : public BxDF
+    {
+    public:
+        //<Lambertian Public Methods>
+        Lambertian(const Spectrum &reflectance)
+                : BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)),
+                    R(reflectance){}
+        virtual Spectrum f(const Vector3f &wo, const Vector3f &wi) const override
+        {
+            return R * INV_PI;
+        }
+        virtual Spectrum rho(const Vector3f &wo, int nSamples = 16, Float *samples = nullptr) const override
+        {
+            return R;
+        }
+        virtual Spectrum rho(int nSamples = 16, Float *samples = nullptr) const override { return R; }
+    private:
+        //<Lambertian Private Data>
+        Spectrum R;
+    };
+
 }
 #endif // BSDF_H

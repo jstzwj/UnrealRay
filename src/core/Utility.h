@@ -18,6 +18,7 @@ namespace unreal
     }
 
     const Float PI= 3.141592653f;
+    const Float INV_PI= 0.31830988618f;
     template<class T>
     Float radians(T n)
     {
