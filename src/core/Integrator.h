@@ -27,7 +27,7 @@ namespace unreal
         SamplerIntegrator(std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : Integrator(),camera(camera), sampler(sampler) { }
         virtual ~SamplerIntegrator()=default;
-        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const=0;
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler,int depth) const=0;
         virtual void render(const Scene &scene) override
         {
             // Render image
@@ -45,7 +45,7 @@ namespace unreal
 
                     // Evaluate radiance along camera ray
                     Spectrum L(0.0f);
-                    //if (rayWeight > 0) L = li(ray, scene, *sampler);
+                    if (rayWeight > 0) L = li(ray, scene, *sampler,0);
 
                     //如果相交
                     SurfaceInteraction isect;
@@ -75,46 +75,54 @@ namespace unreal
         WhittedIntegrator(int maxDepth, std::shared_ptr<Camera> camera,std::shared_ptr<Sampler> sampler)
             : SamplerIntegrator(camera, sampler), maxDepth(maxDepth) {}
         virtual ~WhittedIntegrator()=default;
-        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const override
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler,int depth) const override
         {
-            SurfaceInteraction isect;
             Spectrum L(0.0f);
-            bool  hitSomething;
-            hitSomething = scene.intersect(ray, &isect);
-            if(!hitSomething)
+            // Find closest ray intersection or return background radiance
+            SurfaceInteraction isect;
+            if (!scene.intersect(ray, &isect))
             {
-                //<Handle ray with nointersection>
-                for ( const auto& each_light:scene.lights)
-                    L  +=  each_light.Le(ray);
-                //if(alpha && !L.Black()) *alpha = 1.;
+                for (const auto &light : scene.lights)
+                    L += light->Le(ray);
                 return L;
             }
-            else
-            {
-                //<Initialize alpha for ray hit>
-                //if (alpha) *alpha = 1.0f;
 
-                //<Compute emitted and reflected light at ray intersection point>
-                //<Evaluate BSDF at hit point>
-                BSDF *bsdf = isect.getBSDF(ray);
-                //<Initialize common variables for Whitted integrator>
-                const Point3f &p = bsdf->dgShading.p;
-                const Normal3f &n = bsdf->dgShading.nn;
-                Vector3f wo = -ray.d;
-                //<Compute emitted light if ray hit an area light source>
-                //<Add contribution of each light source>
-                if (rayDepth++ <  maxDepth)
-                {
-                    //<Trace rays for specular reflection and refraction>
-                }
-                --rayDepth;
+            // Compute emitted and reflected light at ray intersection point
+
+            // Initialize common variables for Whitted integrator
+            const Normal3f &n = isect.shading.n;
+            Vector3f wo = isect.wo;
+
+            // Compute scattering functions for surface interaction
+            //isect.ComputeScatteringFunctions(ray, arena);
+            //if (!isect.bsdf)
+                //return Li(isect.SpawnRay(ray.d), scene, sampler, arena, depth);
+
+            // Compute emitted light if ray hit an area light source
+            L += isect.Le(wo);
+
+            // Add contribution of each light source
+            for (const auto &light : scene.lights)
+            {
+                Vector3f wi;
+                Float pdf;
+                Spectrum Li =light->sample_Li(isect, sampler.get2D(), &wi, &pdf);
+                if (Li.isBlack() || pdf == 0) continue;
+                Spectrum f = isect.bsdf->f(wo, wi);
+                if (!f.isBlack())
+                    L += f * Li * std::abs(wi.dot(n)) / pdf;
             }
-           return L;
+            if (depth + 1 < maxDepth)
+            {
+                // Trace rays for specular reflection and refraction
+                //L += SpecularReflect(ray, isect, scene, sampler, arena, depth);
+                //L += SpecularTransmit(ray, isect, scene, sampler, arena, depth);
+            }
+            return L;
         }
       private:
         // WhittedIntegrator Private Data
         int maxDepth;
-        mutable int rayDepth;
     };
 }
 #endif // INTEGRATOR_H

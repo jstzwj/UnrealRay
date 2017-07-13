@@ -51,7 +51,9 @@ HEADERS  += mainwindow.h \
     core/Type.h \
     core/Interaction.h \
     core/Camera.h \
-    core/Bsdf.h
+    core/Bsdf.h \
+    core/Material.h \
+    core/Texture.h
 
 FORMS    += mainwindow.ui
 

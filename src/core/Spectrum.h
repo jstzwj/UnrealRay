@@ -153,7 +153,12 @@ namespace unreal
         {
             return y() <s2.y();
         }
-
+        bool isBlack() const
+        {
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                if (c[i] != 0.f) return false;
+            return true;
+        }
     private:
         Float c[COLOR_SAMPLES];
 
