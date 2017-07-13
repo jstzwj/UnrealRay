@@ -5,7 +5,7 @@
 //#include"Shape.h"
 //#include"Primitive.h"
 #include"Spectrum.h"
-#include"Bsdf.h"
+//#include"Bsdf.h"
 
 namespace unreal
 {
@@ -54,7 +54,7 @@ namespace unreal
         //const Primitive *primitive = nullptr;
         Vector3f dpdx, dpdy;
         Float dudx = 0, dvdx = 0, dudy = 0, dvdy = 0;
-        BSDF * bsdf;
+        //BSDF * bsdf;
     };
 
 }

@@ -2,7 +2,10 @@
 #define MATERIAL_H
 
 
+#include<memory>
+
 #include"Interaction.h"
+#include"Texture.h"
 
 namespace unreal
 {
@@ -24,9 +27,10 @@ namespace unreal
                       const std::shared_ptr<Texture<Float>> &sigma,
                       const std::shared_ptr<Texture<Float>> &bumpMap)
             : Kd(Kd), sigma(sigma), bumpMap(bumpMap) {}
-        void ComputeScatteringFunctions(SurfaceInteraction *si, MemoryArena &arena,
-                                        TransportMode mode,
-                                        bool allowMultipleLobes) const;
+        virtual void computeScatteringFunctions(SurfaceInteraction *si,TransportMode mode) const override
+        {
+
+        }
 
       private:
         // MatteMaterial Private Data

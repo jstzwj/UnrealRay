@@ -58,17 +58,6 @@ namespace unreal
                                                     (wb.x * wb.x + wb.y * wb.y)),
             -1, 1);
     }
-    class BSDF
-    {
-    public:
-        //const DifferentialGeometry dgShading;
-        const Float eta=0.0f;
-    private:
-        Normal3f nn, ng;
-        Vector3f sn, tn;
-    public:
-
-    };
 
     enum BxDFType
     {
@@ -169,9 +158,9 @@ namespace unreal
         BSDF(const SurfaceInteraction &si,Float eta=1.0f)
             :eta(eta),
               ns(si.shading.n),
-              ng(si.n),
+              ng(si.nHit),
               ss(si.shading.dpdu.normalize()),
-              ts(ns.cross(ss)){}
+              ts(ns.cross(Vector3f(ss.x,ss.y,ss.z))){}
         void add(BxDF *b)
         {
             bxdfs.push_back(b);
@@ -181,12 +170,12 @@ namespace unreal
         {
             int num = 0;
             for (const auto &each:bxdfs)
-                if (each->matchesFlags(flags)) ++num;
+                if (each->matchesFlag(flags)) ++num;
             return num;
         }
         Vector3f WorldToLocal(const Vector3f &v) const
         {
-            return Vector3f(v.dot(ss), v.dot(ts), v.dot(ns));
+            return Vector3f(v.dot(ss), v.dot(ts), v.dot(Vector3f(ns.x,ns.y,ns.z)));
         }
         Vector3f LocalToWorld(const Vector3f &v) const
         {
@@ -196,17 +185,17 @@ namespace unreal
         }
         bool HasShadingGeometry() const
         {
-            return(nn.x != ng.x || nn.y != ng.y || nn.z != ng.z);
+            return(ns.x != ng.x || ns.y != ng.y || ns.z != ng.z);
         }
         Spectrum f(const Vector3f &woW, const Vector3f &wiW,BxDFType flags = BSDF_ALL) const
         {
             Vector3f wi = WorldToLocal(wiW), wo = WorldToLocal(woW);
             if (wo.z == 0) return 0.0f;
-            bool reflect = wiW.dot(ng) * woW.dot(ng) > 0;
+            bool reflect = wiW.dot(Vector3f(ng.x,ng.y,ng.z)) * woW.dot(Vector3f(ng.x,ng.y,ng.z)) > 0;
             Spectrum f(0.0f);
             for (const auto & each:bxdfs)
             {
-                if (each->matchesFlags(flags) &&
+                if (each->matchesFlag(flags) &&
                     ((reflect && (each->type & BSDF_REFLECTION)) ||
                      (!reflect && (each->type & BSDF_TRANSMISSION))))
                     f += each->f(wo, wi);
@@ -217,7 +206,7 @@ namespace unreal
         {
             Spectrum ret(0.0f);
             for (const auto & each:bxdfs)
-                if (each->matchesFlags(flags))
+                if (each->matchesFlag(flags))
                     ret += each->rho(nSamples, samples1, samples2);
             return ret;
         }
@@ -225,7 +214,7 @@ namespace unreal
         {
             Spectrum ret(0.0f);
             for (const auto & each:bxdfs)
-                if (each->matchesFlags(flags))
+                if (each->matchesFlag(flags))
                     ret += each->rho(wo, nSamples, samples);
             return ret;
         }
