@@ -5,6 +5,7 @@
 //#include"Shape.h"
 //#include"Primitive.h"
 #include"Spectrum.h"
+//#include"Bsdf.h"
 
 namespace unreal
 {
@@ -42,10 +43,18 @@ namespace unreal
         Vector3f dpdu, dpdv;
         Normal3f dndu, dndv;
 
+        struct
+        {
+            Normal3f n;
+            Vector3f dpdu, dpdv;
+            Normal3f dndu, dndv;
+        } shading;
+
         //const Shape *shape = nullptr;
         //const Primitive *primitive = nullptr;
         Vector3f dpdx, dpdy;
         Float dudx = 0, dvdx = 0, dudy = 0, dvdy = 0;
+        //BSDF * bsdf;
     };
 
 }

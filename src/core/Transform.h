@@ -125,10 +125,34 @@ namespace unreal
         }
         static Transform lookAt(const Point3f &pos, const Point3f &look, const Vector3f &up)
         {
-            Float m[4][4];
+            Matrix4x4 cameraToWorld;
+            // Initialize fourth column of viewing matrix
+            cameraToWorld.data[0][3] = pos.x;
+            cameraToWorld.data[1][3] = pos.y;
+            cameraToWorld.data[2][3] = pos.z;
+            cameraToWorld.data[3][3] = 1;
 
-            Matrix4x4 camToWorld(m);
-            return Transform(camToWorld.inverse(), camToWorld);
+            // Initialize first three columns of viewing matrix
+            Vector3f dir = (Vector3f(look - pos)).normalize();
+            if (up.normalize().cross(dir).length() == 0) {
+                //record error
+                return Transform();
+            }
+            Vector3f left = up.normalize().cross(dir).normalize();
+            Vector3f newUp = dir.cross(left);
+            cameraToWorld.data[0][0] = left.x;
+            cameraToWorld.data[1][0] = left.y;
+            cameraToWorld.data[2][0] = left.z;
+            cameraToWorld.data[3][0] = 0.0f;
+            cameraToWorld.data[0][1] = newUp.x;
+            cameraToWorld.data[1][1] = newUp.y;
+            cameraToWorld.data[2][1] = newUp.z;
+            cameraToWorld.data[3][1] = 0.0f;
+            cameraToWorld.data[0][2] = dir.x;
+            cameraToWorld.data[1][2] = dir.y;
+            cameraToWorld.data[2][2] = dir.z;
+            cameraToWorld.data[3][2] = 0.0f;
+            return Transform(Matrix4x4::inverse(cameraToWorld), cameraToWorld);
         }
         static Transform inverse(const Transform & other)
         {

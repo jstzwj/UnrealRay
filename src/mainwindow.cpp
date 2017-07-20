@@ -6,6 +6,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->resize(500,500);
+    engine.render();
+    Film * film=&*engine.integrator->camera->film;
+    film->writeImage();
 }
 
 MainWindow::~MainWindow()
@@ -16,17 +21,15 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
+    Film * film=&*engine.integrator->camera->film;
+    QImage qimg=dynamic_cast<QImageFilm *>(film)->getImage();
+
 
     QPainter painter(this);
-
-    QImage img;
-    Film<QImage> film(img);
-    scene.setFilm(film);
-    scene.render();
 
     // 反走样
     painter.setRenderHint(QPainter::Antialiasing, true);
 
      // 绘制图标
-     painter.drawPixmap(rect(), QPixmap::fromImage(film.getData()));
+     painter.drawPixmap(rect(), QPixmap::fromImage(qimg));
 }

@@ -18,7 +18,7 @@ namespace unreal
 	{
 	public:
         Camera(const Transform &CameraToWorld, Float shutterOpen,Float shutterClose, std::shared_ptr<Film> film)
-            :WorldToCamera(CameraToWorld.getInverse()),CameraToWorld(WorldToCamera),
+            :WorldToCamera(CameraToWorld.getInverse()),CameraToWorld(CameraToWorld),
               shutterOpen(shutterOpen),shutterClose(shutterClose),
               film(film){}
 
@@ -73,10 +73,10 @@ namespace unreal
             : ProjectiveCamera(CameraToWorld, orthographic(0, 1),
                     screenWindow, shutterOpen, shutterClose,
                                lensRadius, focalDistance, film){}
-        Transform orthographic(double znear, double zfar)
+        Transform orthographic(Float znear, Float zfar)
         {
-            return Transform::scale(1.0, 1.0, 1.0/(zfar-znear)) *
-                    Transform::translate(Vector3f(0.0, 0.0, -znear));
+            return Transform::scale(1.0f, 1.0f, 1.0f/(zfar-znear)) *
+                    Transform::translate(Vector3f(0.0f, 0.0f, -znear));
         }
         virtual Float generateRay(const Sample &sample, Ray *ray) const override
         {

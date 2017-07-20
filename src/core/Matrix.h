@@ -13,7 +13,15 @@ namespace unreal
     public:
         Float data[4][4];
     public:
-        Matrix4x4()=default;
+        Matrix4x4()
+        {
+            data[0][0] = data[1][1] = data[2][2] = data[3][3] = 1.0f;
+            data[0][1] = data[0][2] = data[0][3] =
+            data[1][0] = data[1][2] = data[1][3] =
+            data[2][0] = data[2][1] = data[2][3] =
+            data[3][0] = data[3][1] = data[3][2] = 0.0f;
+        }
+
         Matrix4x4(Float * mat)
         {
             std::memcpy(data,mat,16*sizeof(Float));
@@ -53,38 +61,42 @@ namespace unreal
             return ((Float *)data)[n];
         }
 
-        Matrix4x4 inverse()
+        Matrix4x4 inverse()const
         {
             Matrix4x4 m(*this);
             Matrix4x4 result;
             for(int i=0;i<4;++i)
-                result.data[i][i]=1.0;
+                result.data[i][i]=1.0f;
             for (int i = 0; i < 4; ++i)
             {
                 Float scale = m[i*4 + i];
                 //Unitized row
                 for (int j = 0; j < 4; ++j)
                 {
-                    m[j*4 + i] /= scale;
-                    result[j*4 + i] /= scale;
+                    m[i*4 + j] /= scale;
+                    result[i*4 + j] /= scale;
                 }
                 //Elementary row transformation
                 for (int j = 0; j < 4; ++j)
                 {
                     if (j != i)
                     {
-                        Float scale_each = m[i*4 + j] / m[i*4 + i];
+                        Float scale_each = m[j*4 + i] / m[i*4 + i];
                         for (int k = 0; k < 4; ++k)
                         {
-                            m[k*4 + j] = m[k*4 + j] - scale_each*m[k*4 + i];
-                            result[k*4 + j] = result[k*4 + j] - scale_each*result[k*4 + i];
+                            m[j*4 + k] = m[j*4 + k] - scale_each*m[i*4 + k];
+                            result[j*4 + k] = result[j*4 + k] - scale_each*result[i*4 + k];
                         }
                     }
                 }
             }
             return result;
         }
-        Matrix4x4 transpose()
+        static Matrix4x4 inverse(const Matrix4x4 & m)
+        {
+            return m.inverse();
+        }
+        Matrix4x4 transpose()const
         {
             Matrix4x4 result;
             for (int i = 0; i < 4; ++i)
@@ -96,20 +108,24 @@ namespace unreal
             }
             return result;
         }
+        static Matrix4x4 transpose(const Matrix4x4 & m)
+        {
+            return m.transpose();
+        }
         static Matrix4x4 times(const Matrix4x4& a,const Matrix4x4& b)
         {
-            Matrix4x4 result;
+            Matrix4x4 result=Matrix4x4::zero();
             for (int i = 0; i < 4; ++i)//a row
             {
                 for (int j = 0; j < 4; ++j)//a col
                 {
-                    if (std::abs(a[j*4 + i]) <= std::numeric_limits<Float>::epsilon())
+                    if (std::abs(a.data[i][j]) <= std::numeric_limits<Float>::epsilon())
                     {
                         continue;
                     }
                     for (int k = 0; k < 4; ++k)//b col
                     {
-                        result[k*4 + i] += a[j*4 + i] * b[k*4 + j];
+                        result.data[i][k] += a.data[i][j] * b.data[j][k];
                     }
                 }
             }
@@ -121,6 +137,15 @@ namespace unreal
             for(int i=0;i<4;++i)
             {
                 rst.data[i][i]=1;
+            }
+            return rst;
+        }
+        static Matrix4x4 zero()
+        {
+            Matrix4x4 rst;
+            for(int i=0;i<4;++i)
+            {
+                rst.data[i][i]=0.0f;
             }
             return rst;
         }

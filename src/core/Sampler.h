@@ -7,6 +7,7 @@
 #include<memory>
 #include<cstring>
 #include<cstdint>
+#include<random>
 
 #include"Point.h"
 namespace unreal
@@ -41,29 +42,29 @@ namespace unreal
 
         virtual Float get1D() = 0;
         virtual Point2f get2D() = 0;
-        void request1DArray(int n)
+        virtual void request1DArray()
         {
-            samples1DArraySizes.push_back(n);
-            sampleArray1D.push_back(std::vector<Float>(n * samplesPerPixel));
+            //samples1DArraySizes.push_back(n);
+            sampleArray1D=std::vector<Float>(samplesPerPixel);
         }
 
-        void request2DArray(int n)
+        virtual void request2DArray()
         {
-            samples2DArraySizes.push_back(n);
-            sampleArray2D.push_back(std::vector<Point2f>(n * samplesPerPixel));
+            //samples2DArraySizes.push_back(n);
+            sampleArray2D=std::vector<Point2f>(samplesPerPixel);
         }
 
         virtual int roundCount(int n) const { return n; }
         const Float *get1DArray(int n)
         {
             if (array1DOffset == sampleArray1D.size()) return nullptr;
-            return &sampleArray1D[array1DOffset++][currentPixelSampleIndex * n];
+            return &sampleArray1D[0];
         }
 
         const Point2f *get2DArray(int n)
         {
             if (array2DOffset == sampleArray2D.size()) return nullptr;
-            return &sampleArray2D[array2DOffset++][currentPixelSampleIndex * n];
+            return &sampleArray2D[0];
         }
 
         virtual bool startNextSample()
@@ -90,9 +91,9 @@ namespace unreal
         // Sampler Protected Data
         Point2i currentPixel;
         int64_t currentPixelSampleIndex;
-        std::vector<int> samples1DArraySizes, samples2DArraySizes;
-        std::vector<std::vector<Float>> sampleArray1D;
-        std::vector<std::vector<Point2f>> sampleArray2D;
+        //std::vector<int> samples1DArraySizes, samples2DArraySizes;
+        std::vector<Float> sampleArray1D;
+        std::vector<Point2f> sampleArray2D;
 
       private:
         // Sampler Private Data
@@ -101,7 +102,48 @@ namespace unreal
     class AverageSampler:public Sampler
     {
     public:
+        AverageSampler(int64_t samplesPerPixel):Sampler(samplesPerPixel){}
 
+        virtual void startPixel(const Point2i &p)
+        {
+            Sampler::startPixel(p);
+            request1DArray();
+            request2DArray();
+        }
+        virtual void request1DArray()
+        {
+            sampleArray1D=std::vector<Float>(samplesPerPixel);
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<> dis(0, 1);
+            for (auto & each:sampleArray1D)
+            {
+                each=dis(gen);
+            }
+
+        }
+
+        virtual void request2DArray()
+        {
+            sampleArray2D=std::vector<Point2f>(samplesPerPixel);
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<> dis(0, 1);
+            for (auto & each:sampleArray2D)
+            {
+                each=Point2f(dis(gen),dis(gen));
+            }
+        }
+
+        Float get1D()
+        {
+            return sampleArray1D[currentPixelSampleIndex];
+        }
+
+        Point2f get2D()
+        {
+            return sampleArray2D[currentPixelSampleIndex];
+        }
     };
 
 }

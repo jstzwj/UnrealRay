@@ -34,11 +34,17 @@ namespace unreal
             for (int i = 0; i < COLOR_SAMPLES; ++i)
                 c[ i ]= cs[ i ];
         }
-        Spectrum &operator += (const Spectrum &other)
+        Spectrum & operator += (const Spectrum &other)
         {
                 for (int i = 0; i < COLOR_SAMPLES; ++i)
                     c[ i ] += other.c[ i ];
                 return *this;
+        }
+        Spectrum & operator /= (Float other)
+        {
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                this->c[ i ]  /= other;
+            return *this;
         }
 
         Spectrum operator + (const Spectrum &other)  const
@@ -53,6 +59,13 @@ namespace unreal
             Spectrum ret = *this;
             for (int i = 0; i < 16; ++i)
                 ret.c[i] *= a;
+            return ret;
+        }
+        Spectrum operator / (Float other)  const
+        {
+            Spectrum ret = *this;
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                ret.c[ i ]  /= other;
             return ret;
         }
         void addWeighted(Float w, const Spectrum &s)
@@ -99,9 +112,21 @@ namespace unreal
                 if(std::isnan(c[ i ])) return false;
             return true;
         }
-        void XYZ(Float xyz[3]) const
+        void ToRGB(Float rgb[3]) const
         {
-            xyz[0] = xyz[1] = xyz[2] = 0.;
+            Float xyz[3];
+            ToXYZ(xyz);
+            XYZToRGB(xyz, rgb);
+        }
+        static void XYZToRGB(const Float xyz[3], Float rgb[3])
+        {
+            rgb[0] = 3.240479f * xyz[0] - 1.537150f * xyz[1] - 0.498535f * xyz[2];
+            rgb[1] = -0.969256f * xyz[0] + 1.875991f * xyz[1] + 0.041556f * xyz[2];
+            rgb[2] = 0.055648f * xyz[0] - 0.204043f * xyz[1] + 1.057311f * xyz[2];
+        }
+        void ToXYZ(Float xyz[3]) const
+        {
+            xyz[0] = xyz[1] = xyz[2] = 0.f;
             for(int i = 0; i < COLOR_SAMPLES; ++i)
             {
                 xyz[0] += XWeight[i] * c[i];
@@ -128,7 +153,12 @@ namespace unreal
         {
             return y() <s2.y();
         }
-
+        bool isBlack() const
+        {
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
+                if (c[i] != 0.f) return false;
+            return true;
+        }
     private:
         Float c[COLOR_SAMPLES];
 

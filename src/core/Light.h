@@ -45,9 +45,10 @@ namespace unreal
                     : nSamples(std::max(1, ns)), LightToWorld(l2w),WorldToLight(l2w.getInverse()) {}
         virtual ~Light()=default;
 
-        /*virtual Spectrum sample_L(const Point &p, Vector *wi,VisibilityTester *vis) const = 0;*/
+        virtual Spectrum sample_Li(const Point3f &p, Vector3f *wi) const = 0;
         virtual Spectrum power() const = 0;
         virtual bool isDeltaLight() const = 0;
+        virtual Spectrum le(const Ray &r) const=0;
 
         const Transform LightToWorld, WorldToLight;
         const int nSamples;

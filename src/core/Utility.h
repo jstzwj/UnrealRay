@@ -17,7 +17,8 @@ namespace unreal
         else return val;
     }
 
-    const Float PI= 3.1415926f;
+    const Float PI= 3.141592653f;
+    const Float INV_PI= 0.31830988618f;
     template<class T>
     Float radians(T n)
     {
@@ -42,11 +43,28 @@ namespace unreal
     }*/
     inline bool quadratic(Float A, Float B, Float C, Float *t0, Float *t1)
     {
-        Float discrim = B * B - 4.0 * A * C;
+        /*Float discrim = B * B - 4.0f * A * C;
         if( discrim < 0 ) return false;
         Float rootDiscrim = std::sqrt(discrim);
-        *t0=(-B-rootDiscrim)*0.5/A;
-        *t1=(-B+rootDiscrim)*0.5/A;
+        *t0=(-B-rootDiscrim)*0.5f/A;
+        *t1=(-B+rootDiscrim)*0.5f/A;
+        return true;*/
+
+        double discrim = (double)B * (double)B - 4.0 * (double)A * (double)C;
+        if (discrim < 0.0) return false;
+        double rootDiscrim = std::sqrt(discrim);
+
+        Float floatRootDiscrim(rootDiscrim);
+
+        // Compute quadratic _t_ values
+        Float q;
+        if ((float)B < 0)
+            q = -0.5 * (B - floatRootDiscrim);
+        else
+            q = -0.5 * (B + floatRootDiscrim);
+        *t0 = q / A;
+        *t1 = C / q;
+        if ((float)*t0 > (float)*t1) std::swap(*t0, *t1);
         return true;
     }
 

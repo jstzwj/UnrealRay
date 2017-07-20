@@ -187,7 +187,7 @@ namespace unreal
         void advance()
         {
             ++p.x;
-            if (p.x <= bounds->pMax.x)
+            if (p.x >= bounds->pMax.x)
             {
                 p.x = bounds->pMin.x;
                 ++p.y;
@@ -239,11 +239,11 @@ namespace unreal
         void advance()
         {
             ++p.x;
-            if (p.x == bounds->pMax.x)
+            if (p.x >= bounds->pMax.x)
             {
                 p.x = bounds->pMin.x;
                 ++p.y;
-                if(p.y==bounds->pMax.y)
+                if(p.y>=bounds->pMax.y)
                 {
                     p.y = bounds->pMin.y;
                     ++p.z;
