@@ -5,6 +5,11 @@
 
 #include"Type.h"
 #include"Point.h"
+#include"Normal.h"
+
+
+template <typename T>
+class Normal3;
 
 namespace unreal
 {
@@ -20,7 +25,7 @@ namespace unreal
             :x(in_x), y(in_y) {}
         Vector2(const Point2<T>& p)
             :x(p.x), y(p.y) {}
-        /*explicit Vector(const Normal &n)
+        /*explicit Vector2(const Normal2<T> &n)
                :x(n.x), y(n.y), z(n.z) { }*/
         //Some operators
         Vector2<T> operator + (const Vector2<T> & rhs) const
@@ -150,8 +155,8 @@ namespace unreal
 			:x(in_x), y(in_y), z(in_z) {}
         Vector3(const Point3<T>& p)
             :x(p.x), y(p.y), z(p.z){}
-        /*explicit Vector3<T>(const Normal &n)
-               :x(n.x), y(n.y), z(n.z) { }*/
+        explicit Vector3(const Normal3<T> &n)
+               :x(n.x), y(n.y), z(n.z) { }
 		//Some operators
         Vector3<T> operator + (const Vector3<T> & rhs) const
 		{

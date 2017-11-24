@@ -29,7 +29,16 @@ namespace unreal
             : Kd(Kd), sigma(sigma), bumpMap(bumpMap) {}
         virtual void computeScatteringFunctions(SurfaceInteraction *si,TransportMode mode) const override
         {
+			// Perform bump mapping with _bumpMap_, if present
+			// if (bumpMap) Bump(bumpMap, si);
 
+			// Evaluate textures for _MatteMaterial_ material and allocate BRDF
+			Normal3f ns= si->shading.n, ng= si->nHit;
+			Vector3f ss= si->shading.dpdu.normalize(), ts= Vector3f(ns).cross(Vector3f(ss.x, ss.y, ss.z));
+
+			si->bsdf = std::make_shared<BSDF>(ns,ng,ss,ts);
+			si->bsdf->add(std::make_shared<Lambertian>(Spectrum(0.9f)));
+			// si->bsdf->add(std::make_shared<SpecularReflection>(Spectrum(0.9f), std::make_shared<FresnelConductor>(0.3,0.2,0.5)));
         }
 
       private:

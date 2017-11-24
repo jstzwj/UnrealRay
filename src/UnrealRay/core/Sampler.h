@@ -118,7 +118,7 @@ namespace unreal
             std::uniform_real_distribution<> dis(0, 1);
             for (auto & each:sampleArray1D)
             {
-                each=dis(gen);
+                each=(unreal::Float)dis(gen);
             }
 
         }
@@ -131,7 +131,7 @@ namespace unreal
             std::uniform_real_distribution<> dis(0, 1);
             for (auto & each:sampleArray2D)
             {
-                each=Point2f(dis(gen),dis(gen));
+                each=Point2f((unreal::Float)dis(gen), (unreal::Float)dis(gen));
             }
         }
 

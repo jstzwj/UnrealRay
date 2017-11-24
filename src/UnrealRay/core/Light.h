@@ -45,7 +45,7 @@ namespace unreal
                     : nSamples(std::max(1, ns)), LightToWorld(l2w),WorldToLight(l2w.getInverse()) {}
         virtual ~Light()=default;
 
-        virtual Spectrum sample_Li(const Point3f &p, Vector3f *wi) const = 0;
+        virtual Spectrum sample_Li(const Interaction &ref, const Point2f &u, Vector3f *wi, Float *pdf) const = 0;
         virtual Spectrum power() const = 0;
         virtual bool isDeltaLight() const = 0;
         virtual Spectrum le(const Ray &r) const=0;
@@ -63,15 +63,28 @@ namespace unreal
             : Light(LightToWorld, (int)LightFlags::DeltaPosition),
               pLight(LightToWorld.transform(Point3f(0, 0, 0))),
               I(I){}
-        /*Spectrum sample_Li(const Interaction &ref, const Point &u, Vector *wi,
-                           double *pdf, VisibilityTester *vis) const;*/
-        Spectrum power() const
-        {
-            return I * 4.0 * PI;
-        }
-        /*Spectrum sample_Le(const Point &u1, const Point &u2, double time,
-                           Ray *ray, Normal *nLight, double *pdfPos,
-                           double *pdfDir) const;*/
+
+		virtual Spectrum sample_Li(const Interaction &ref, const Point2f &u, Vector3f *wi, Float *pdf) const
+		{
+			*wi = ((Vector3f)(pLight - ref.pHit)).normalize();
+			*pdf = 1.0f;
+			// visibility->SetSegment(p, lightPos);
+			return I / distanceSquared(pLight, ref.pHit);
+		}
+
+		virtual Spectrum power() const
+		{
+			return I * 4.0 * PI;
+		}
+		virtual bool isDeltaLight() const
+		{
+			return true;
+		}
+
+		virtual Spectrum le(const Ray &r) const
+		{
+			return Spectrum(0.0f);
+		}
 
       private:
         // PointLight Private Data

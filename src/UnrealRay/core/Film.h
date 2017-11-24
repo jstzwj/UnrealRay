@@ -1,15 +1,19 @@
 #ifndef FILM_H
 #define FILM_H
 
-#include<QImage>
 #include<string>
 #include<vector>
+#include<stdexcept>
 #include<cmath>
+#include<cstdio>
 #include"Ray.h"
 #include"Sampler.h"
 #include"Filter.h"
 #include"Spectrum.h"
 #include"Bounds.h"
+#include"Pixel.h"
+
+#include"../output/Bmp.h"
 
 namespace unreal
 {
@@ -34,24 +38,10 @@ namespace unreal
     };
 
 
-
-
-    struct Pixel
-    {
-        Pixel () : L(0.0f)
-        {
-            alpha = 0.0f;
-            weightSum =0;
-        }
-        Spectrum L;
-        Float alpha;
-        int weightSum;
-    };
-
     class ImageFilm : public Film
     {
     public:
-            //< ImageFilm public Method>
+        //< ImageFilm public Method>
         ImageFilm(const Point2i& res,const std::string &fn)
            : Film(res)
         {
@@ -87,12 +77,12 @@ namespace unreal
         std::vector<Float> filterTable;
     };
 
-    class QImageFilm : public Film
+    class BmpImageFilm : public Film
     {
     public:
-            //< ImageFilm public Method>
-        QImageFilm(const Point2i& res,const std::string &fn)
-           : Film(res),img(res.x,res.y,QImage::Format_ARGB32)
+        //< ImageFilm public Method>
+		BmpImageFilm(const Point2i& res,const std::string &fn)
+           : Film(res)
         {
             filename = fn;
 
@@ -112,21 +102,22 @@ namespace unreal
         }
         virtual void writeImage()override
         {
-            for(int y=yPixelStart;y<yPixelStart+yPixelCount;++y)
-            {
-                for(int x=xPixelStart;x<xPixelStart+xPixelCount;++x)
-                {
-                    Float rgb[3];
-                    Spectrum cur_spectrum=pixels[y*xPixelCount+x].L;
-                    cur_spectrum/=(Float)pixels[y*xPixelCount+x].weightSum;
-                    cur_spectrum.ToRGB(rgb);
-                    img.setPixelColor(QPoint(x,y),QColor::fromRgbF(qreal(rgb[0]),qreal(rgb[1]),qreal(rgb[2])) );
-                }
-            }
-        }
-        QImage getImage()
-        {
-            return img;
+			std::FILE * file = nullptr;
+#ifdef _MSC_VER
+			fopen_s(&file, filename.c_str(), "wb");
+#else
+			file = std::fopen(path.c_str(), "wb");
+#endif // _MSC_VER
+			if (file == nullptr)
+			{
+				throw std::runtime_error("fail to open file.");
+			}
+
+			stream::FileOutputStream stream(file);
+			BmpWriter writer(stream, xPixelCount, yPixelCount);
+			writer.write(pixels);
+
+			std::fclose(file);
         }
     private:
         std::string filename;
@@ -134,7 +125,6 @@ namespace unreal
 
         int  xPixelStart, xPixelCount, yPixelStart, yPixelCount;
         std::vector<Pixel> pixels;
-        QImage img;
         //std::vector<Float> filterTable;
     };
 

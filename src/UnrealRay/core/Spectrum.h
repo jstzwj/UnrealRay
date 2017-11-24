@@ -54,13 +54,30 @@ namespace unreal
                 ret.c[ i ]  += other.c[ i ];
             return ret;
         }
+
+		Spectrum operator - (const Spectrum &other)  const
+		{
+			Spectrum ret = *this;
+			for (int i = 0; i < COLOR_SAMPLES; ++i)
+				ret.c[i] -= other.c[i];
+			return ret;
+		}
+
         Spectrum operator*(Float a) const
         {
             Spectrum ret = *this;
-            for (int i = 0; i < 16; ++i)
+            for (int i = 0; i < COLOR_SAMPLES; ++i)
                 ret.c[i] *= a;
             return ret;
         }
+
+		Spectrum operator*(const Spectrum &sp) const 
+		{
+			Spectrum ret = *this;
+			for (int i = 0; i < COLOR_SAMPLES; ++i) ret.c[i] *= sp.c[i];
+			return ret;
+		}
+
         Spectrum operator / (Float other)  const
         {
             Spectrum ret = *this;
@@ -68,6 +85,22 @@ namespace unreal
                 ret.c[ i ]  /= other;
             return ret;
         }
+
+		Spectrum operator/(const Spectrum & other) const {
+			Spectrum ret = *this;
+			for (int i = 0; i < COLOR_SAMPLES; ++i) 
+			{
+				ret.c[i] /= other.c[i];
+			}
+			return ret;
+		}
+
+		Spectrum sqrt(const Spectrum &s) {
+			Spectrum ret;
+			for (int i = 0; i < COLOR_SAMPLES; ++i) ret.c[i] = std::sqrt(s.c[i]);
+			return ret;
+		}
+
         void addWeighted(Float w, const Spectrum &s)
         {
             for (int i = 0; i < COLOR_SAMPLES; ++i)

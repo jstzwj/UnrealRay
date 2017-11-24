@@ -4,6 +4,9 @@
 #include"Type.h"
 #include"Vector.h"
 
+template <typename T>
+class Vector3;
+
 namespace unreal
 {
     template<class T>
@@ -16,8 +19,7 @@ namespace unreal
             :x(0.0), y(0.0), z(0.0) {}
         Normal3(T in_x, T in_y, T in_z)
             :x(in_x), y(in_y), z(in_z) {}
-        template<class U>
-        explicit Normal3(const Vector3<U> &v)
+        explicit Normal3(const Vector3<T> &v)
                 : x(v.x),  y(v.y), z(v.z) {}
         //Some operators
         Normal3<T> operator + (const Normal3<T> & rhs)

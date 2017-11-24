@@ -12,9 +12,9 @@ namespace unreal
     template <typename T, typename U, typename V>
     T clamp(T val, U low, V high)
     {
-        if (val < low) return low;
-        else if (val > high) return high;
-        else return val;
+        if (val < low) return static_cast<T>(low);
+        else if (val > high) return static_cast<T>(high);
+        else return static_cast<T>(val);
     }
 
     const Float PI= 3.141592653f;
@@ -54,14 +54,14 @@ namespace unreal
         if (discrim < 0.0) return false;
         double rootDiscrim = std::sqrt(discrim);
 
-        Float floatRootDiscrim(rootDiscrim);
+        Float floatRootDiscrim=(unreal::Float)rootDiscrim;
 
         // Compute quadratic _t_ values
         Float q;
         if ((float)B < 0)
-            q = -0.5 * (B - floatRootDiscrim);
+            q = -0.5f * (B - floatRootDiscrim);
         else
-            q = -0.5 * (B + floatRootDiscrim);
+            q = -0.5f * (B + floatRootDiscrim);
         *t0 = q / A;
         *t1 = C / q;
         if ((float)*t0 > (float)*t1) std::swap(*t0, *t1);
@@ -91,6 +91,14 @@ namespace unreal
         Float z=m.z-n.z;
         return std::sqrt(x*x+y*y+z*z);
     }
+
+	inline Float distanceSquared(const Point3f &m, const Point3f &n)
+	{
+		Float x = m.x - n.x;
+		Float y = m.y - n.y;
+		Float z = m.z - n.z;
+		return x*x + y*y + z*z;
+	}
 }
 
 #endif // UTILITY_H

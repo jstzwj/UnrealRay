@@ -3,6 +3,7 @@
 
 
 #include<memory>
+#include<iostream>
 
 #include"Scene.h"
 #include"Spectrum.h"
@@ -16,7 +17,7 @@ namespace unreal
     {
     public:
         Integrator()=default;
-        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler) const=0;
+        virtual Spectrum li(const Ray &ray, const Scene &scene,Sampler &sampler, int depth) const=0;
         virtual void render(const Scene &scene) = 0;
         virtual ~Integrator()=default;
     };
@@ -48,11 +49,11 @@ namespace unreal
                     if (rayWeight > 0) L = li(ray, scene, *sampler,0);
 
                     //如果相交
-                    SurfaceInteraction isect;
+                    /*SurfaceInteraction isect;
                     if(scene.intersect(ray,&isect))
                     {
                         L=Spectrum(0.9f);
-                    }
+                    }*/
 
                     // Add camera ray's contribution to image
                     film->addSample(sample,L, rayWeight);
@@ -83,7 +84,7 @@ namespace unreal
             if (!scene.intersect(ray, &isect))
             {
                 for (const auto &light : scene.lights)
-                    L += light->Le(ray);
+                    L += light->le(ray);
                 return L;
             }
 
@@ -99,7 +100,7 @@ namespace unreal
                 //return Li(isect.SpawnRay(ray.d), scene, sampler, arena, depth);
 
             // Compute emitted light if ray hit an area light source
-            L += isect.Le(wo);
+            L += isect.le(wo);
 
             // Add contribution of each light source
             for (const auto &light : scene.lights)
@@ -110,7 +111,7 @@ namespace unreal
                 if (Li.isBlack() || pdf == 0) continue;
                 Spectrum f = isect.bsdf->f(wo, wi);
                 if (!f.isBlack())
-                    L += f * Li * std::abs(wi.dot(n)) / pdf;
+                    L += f * Li * std::abs(wi.dot((Vector3f)n)) / pdf;
             }
             if (depth + 1 < maxDepth)
             {

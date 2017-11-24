@@ -10,6 +10,7 @@
 #include"Transform.h"
 #include"Interaction.h"
 #include"Shape.h"
+#include"Material.h"
 
 
 namespace unreal
@@ -27,8 +28,8 @@ namespace unreal
     class GeometricPrimitive : public Primitive
     {
     public:
-        GeometricPrimitive(const std::shared_ptr<Shape> &s)
-            :shape(s){}
+        GeometricPrimitive(const std::shared_ptr<Shape> &s, const std::shared_ptr<Material> &m)
+            :shape(s), material(m){}
 
         virtual ~GeometricPrimitive()=default;
 
@@ -37,6 +38,7 @@ namespace unreal
         {
             Float tHit;
             if (!shape->intersect(r, &tHit, isect)) return false;
+			material->computeScatteringFunctions(isect, TransportMode::Importance);
             //isect->primitive = this;
             return true;
         }
@@ -46,7 +48,7 @@ namespace unreal
         }
     private:
         std::shared_ptr<Shape> shape;
-        /*std::shared_ptr<Material> material;*/
+        std::shared_ptr<Material> material;
     };
 
     class InstancePrimitive : public Primitive {
@@ -99,6 +101,9 @@ namespace unreal
                     min_rst=rst;
                 }
             }
+
+			*isect = min_isect;
+
             return min_rst;
         }
         virtual bool intersectP(const Ray &ray) const override

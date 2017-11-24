@@ -101,19 +101,19 @@ namespace unreal
                 Float s = std::sin(radians(angle));
                 Float c = std::cos(radians(angle));
                 Float m[4][4];
-                m[0][0] = a.x * a.x + (1.0 - a.x * a.x) * c;
-                m[0][1] = a.x * a.y + (1.0 - c) - a.z *s;
-                m[0][2] = a.x * a.z * (1.0 - c) + a.y * s;
+                m[0][0] = a.x * a.x + (1.0f - a.x * a.x) * c;
+                m[0][1] = a.x * a.y + (1.0f - c) - a.z *s;
+                m[0][2] = a.x * a.z * (1.0f - c) + a.y * s;
                 m[0][3] =0;
 
-                m[1][0] = a.x * a.y * (1.0 - c) + a.z *s;
-                m[1][1] = a.y* a.y + (1.0 - a.y * a.y) *c;
-                m[1][2] = a.y * a.z * (1.0 - c) - a.x * s;
+                m[1][0] = a.x * a.y * (1.0f - c) + a.z *s;
+                m[1][1] = a.y* a.y + (1.0f - a.y * a.y) *c;
+                m[1][2] = a.y * a.z * (1.0f - c) - a.x * s;
                 m[1][3] =0;
 
-                m[2][0] = a.x * a.z * (1.0 - c) - a.y *s;
-                m[2][1] = a.y * a.z * (1.0 - c) + a.x *s;
-                m[2][2] = a.z * a.z + (1.0 - a.z * a.z) * c;
+                m[2][0] = a.x * a.z * (1.0f - c) - a.y *s;
+                m[2][1] = a.y * a.z * (1.0f - c) + a.x *s;
+                m[2][2] = a.z * a.z + (1.0f - a.z * a.z) * c;
                 m[2][3] =0;
 
                 m[3][0] = 0;

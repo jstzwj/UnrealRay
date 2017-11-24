@@ -13,7 +13,9 @@
 #include"Interaction.h"
 #include"Spectrum.h"
 
-
+class Interaction;
+class SurfaceInteraction;
+struct Shading;
 
 namespace unreal
 {
@@ -23,7 +25,7 @@ namespace unreal
     inline Float AbsCosTheta(const Vector3f &w) { return std::abs(w.z); }
     inline Float Sin2Theta(const Vector3f &w)
     {
-        return std::max(0.0, 1.0 - Cos2Theta(w));
+        return std::max(0.0f, 1.0f - Cos2Theta(w));
     }
 
     inline Float SinTheta(const Vector3f &w) { return std::sqrt(Sin2Theta(w)); }
@@ -100,7 +102,7 @@ namespace unreal
                 Spectrum f = sample_f(w, &wi, u[i], &pdf);
                 if (pdf > 0) r += f * AbsCosTheta(wi) / pdf;
             }
-            return r / nSamples;
+            return r / (unreal::Float)nSamples;
         }
         virtual Spectrum rho(int nSamples, const Point2f *u1, const Point2f *u2) const
         {
@@ -124,6 +126,123 @@ namespace unreal
         const BxDFType type;
     };
 
+	inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) 
+	{
+		cosThetaI = unreal::clamp(cosThetaI, -1, 1);
+		// Potentially swap indices of refraction
+		bool entering = cosThetaI > 0.f;
+		if (!entering) {
+			std::swap(etaI, etaT);
+			cosThetaI = std::abs(cosThetaI);
+		}
+
+		// Compute _cosThetaT_ using Snell's law
+		Float sinThetaI = std::sqrt(std::max((Float)0, 1 - cosThetaI * cosThetaI));
+		Float sinThetaT = etaI / etaT * sinThetaI;
+
+		// Handle total internal reflection
+		if (sinThetaT >= 1) return 1;
+		Float cosThetaT = std::sqrt(std::max((Float)0, 1 - sinThetaT * sinThetaT));
+		Float Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) /
+			((etaT * cosThetaI) + (etaI * cosThetaT));
+		Float Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) /
+			((etaI * cosThetaI) + (etaT * cosThetaT));
+		return (Rparl * Rparl + Rperp * Rperp) / 2;
+	}
+
+	inline Spectrum FrConductor(Float cosThetaI, const Spectrum &etai,
+		const Spectrum &etat, const Spectrum &k) 
+	{
+		cosThetaI = unreal::clamp(cosThetaI, -1, 1);
+		Spectrum eta = etat / etai;
+		Spectrum etak = k / etai;
+
+		Float cosThetaI2 = cosThetaI * cosThetaI;
+		Float sinThetaI2 = 1. - cosThetaI2;
+		Spectrum eta2 = eta * eta;
+		Spectrum etak2 = etak * etak;
+
+		Spectrum t0 = eta2 - etak2 - sinThetaI2;
+		Spectrum a2plusb2 = (t0 * t0 + eta2 * etak2 * 4).sqrt();
+		Spectrum t1 = a2plusb2 + cosThetaI2;
+		Spectrum a = ((a2plusb2 + t0) * 0.5f).sqrt();
+		Spectrum t2 = a * (Float)2 * cosThetaI;
+		Spectrum Rs = (t1 - t2) / (t1 + t2);
+
+		Spectrum t3 = a2plusb2 * cosThetaI2 + sinThetaI2 * sinThetaI2;
+		Spectrum t4 = t2 * sinThetaI2;
+		Spectrum Rp = Rs * (t3 - t4) / (t3 + t4);
+
+		return (Rp + Rs) * 0.5f;
+	}
+
+	class Fresnel 
+	{
+	public:
+		// Fresnel Interface
+		virtual ~Fresnel() {}
+		virtual Spectrum Evaluate(Float cosI) const = 0;
+	};
+
+	class FresnelConductor : public Fresnel {
+	public:
+		// FresnelConductor Public Methods
+		Spectrum Evaluate(Float cosThetaI) const
+		{
+			return FrConductor(std::abs(cosThetaI), etaI, etaT, k);
+		}
+		FresnelConductor(const Spectrum &etaI, const Spectrum &etaT, const Spectrum &k)
+			: etaI(etaI), etaT(etaT), k(k) {}
+
+	private:
+		Spectrum etaI, etaT, k;
+	};
+
+	class FresnelDielectric : public Fresnel {
+	public:
+		// FresnelDielectric Public Methods
+		Spectrum Evaluate(Float cosThetaI) const
+		{
+			return FrDielectric(cosThetaI, etaI, etaT);
+		}
+
+		FresnelDielectric(Float etaI, Float etaT) : etaI(etaI), etaT(etaT) {}
+
+	private:
+		Float etaI, etaT;
+	};
+
+	class FresnelNoOp : public Fresnel {
+	public:
+		Spectrum Evaluate(Float) const { return Spectrum(1.); }
+	};
+
+	class SpecularReflection : public BxDF 
+	{
+	public:
+		// SpecularReflection Public Methods
+		SpecularReflection(const Spectrum &R, const std::shared_ptr<Fresnel> fresnel)
+			: BxDF(BxDFType(BSDF_REFLECTION | BSDF_SPECULAR)),
+			R(R),
+			fresnel(fresnel) {}
+		Spectrum f(const Vector3f &wo, const Vector3f &wi) const {
+			return Spectrum(0.f);
+		}
+
+		Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample, Float *pdf, BxDFType *sampledType) const
+		{
+			*wi = Vector3f(-wo.x, -wo.y, wo.z);
+			*pdf = 1;
+			return fresnel->Evaluate(CosTheta(*wi)) * R / AbsCosTheta(*wi);
+		}
+
+		Float Pdf(const Vector3f &wo, const Vector3f &wi) const { return 0; }
+
+	private:
+		// SpecularReflection Private Data
+		const Spectrum R;
+		std::shared_ptr<Fresnel> fresnel;
+	};
 
     class Lambertian : public BxDF
     {
@@ -146,22 +265,22 @@ namespace unreal
         Spectrum R;
     };
 
-
     class BSDF
     {
     public:
-        const SurfaceInteraction dgShading;
+        // const SurfaceInteraction& dgShading;
         const Float eta;
         const Normal3f ns, ng;
         const Vector3f ss, ts;
     public:
-        BSDF(const SurfaceInteraction &si,Float eta=1.0f)
-            :eta(eta),
-              ns(si.shading.n),
-              ng(si.nHit),
-              ss(si.shading.dpdu.normalize()),
-              ts(ns.cross(Vector3f(ss.x,ss.y,ss.z))){}
-        void add(BxDF *b)
+		BSDF(const Normal3f& ns, const Normal3f& ng, const Vector3f& ss, const Vector3f& ts, Float eta = 1.0f)
+			:eta(eta), ns(ns), ng(ng), ss(ss), ts(ts) {}
+              // ns(si.shading.n),
+              // ng(si.nHit),
+              // ss(si.shading.dpdu.normalize()),
+              // ts(Vector3f(ns).cross(Vector3f(ss.x,ss.y,ss.z))){}
+
+        void add(std::shared_ptr<BxDF> b)
         {
             bxdfs.push_back(b);
         }
@@ -175,7 +294,7 @@ namespace unreal
         }
         Vector3f WorldToLocal(const Vector3f &v) const
         {
-            return Vector3f(v.dot(ss), v.dot(ts), v.dot(Vector3f(ns.x,ns.y,ns.z)));
+            return Vector3f(v.dot(ss), v.dot(ts), v.dot(Vector3f(ns)));
         }
         Vector3f LocalToWorld(const Vector3f &v) const
         {
@@ -195,10 +314,12 @@ namespace unreal
             Spectrum f(0.0f);
             for (const auto & each:bxdfs)
             {
-                if (each->matchesFlag(flags) &&
-                    ((reflect && (each->type & BSDF_REFLECTION)) ||
-                     (!reflect && (each->type & BSDF_TRANSMISSION))))
-                    f += each->f(wo, wi);
+				if (each->matchesFlag(flags) &&
+					((reflect && (each->type & BSDF_REFLECTION)) ||
+					(!reflect && (each->type & BSDF_TRANSMISSION))))
+				{
+					f += each->f(wo, wi);
+				}
             }
             return f;
         }
@@ -223,7 +344,7 @@ namespace unreal
 
         }
     private:
-        std::vector<BxDF *> bxdfs;
+        std::vector<std::shared_ptr<BxDF> > bxdfs;
     };
 
 

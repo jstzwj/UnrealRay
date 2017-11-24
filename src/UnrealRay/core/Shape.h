@@ -33,7 +33,7 @@ namespace unreal
     class Sphere : public Shape
     {
         public:
-            Sphere(const Transform &o2w, bool ro, Float rad,Float z0, Float z1, Float pm)
+            Sphere(const Transform &o2w, bool ro, Float rad,Float z0, Float z1, Float pm = 360.f)
                 : Shape(o2w,o2w.getInverse(), ro)
             {
                 radius = rad;
@@ -135,11 +135,7 @@ namespace unreal
 
 
                 //<Initialize DifferentialGeometry from parametric information>
-                isect->pHit=phit;
-                isect->dpdu=dpdu;
-                isect->dpdv=dpdv;
-                isect->dndu=(Normal3f)dndu;
-                isect->dndv=(Normal3f)dndv;
+				*isect = SurfaceInteraction(phit, ray.direction, dpdu, dpdv, (Normal3f)dndu, (Normal3f)dndv, ray.time);
                 isect->uv={u,v};
                 //isect->shape=this;
 
@@ -215,31 +211,83 @@ namespace unreal
 
     };
 
+	/*
+	class TriangleMesh
+	{
+	public:
+		//<TriangleMesh Public Methods>
+		TriangleMesh(const Transform &o2w, bool ro, int nt, int nv,
+			const int *vi, const Point3f *P, const Normal3f *N, const  Vector3f *S, Float *uv)
+		{
+			ntris = nt;
+			nverts = nv;
+			vertexIndex = new int[3 * ntris];
+			memcpy(vertexIndex, vi, 3 * ntris * sizeof(int));
+			//<Copy uv, N and S vertex data, if present>
+			//<Transform mesh vertices to world space>
+		}
+	protected:
+		//<TriangleMesh Data>
+		int ntris, nverts;
+		int * vertexIndex;
+		Point3f *p;
+		Normal3f *n;
+		Vector3f *s;
+		Float *uvs;
+	};
 
-    class TriangleMesh : public Shape
-    {
-    public:
-        //<TriangleMesh Public Methods>
-        TriangleMesh(const Transform &o2w, bool ro, int nt, int nv,
-                const int *vi, const Point3f *P, const Normal3f *N, const  Vector3f *S, Float *uv)
-                : Shape(o2w,o2w.getInverse(), ro)
-        {
-                ntris = nt;
-                nverts = nv;
-                vertexIndex = new int[3 * ntris];
-                memcpy(vertexIndex, vi, 3 * ntris * sizeof(int));
-                //<Copy uv, N and S vertex data, if present>
-                //<Transform mesh vertices to world space>
-        }
-    protected:
-        //<TriangleMesh Data>
-        int ntris, nverts;
-        int * vertexIndex;
-        Point3f *p;
-        Normal3f *n;
-        Vector3f *s;
-        Float *uvs;
-    };
+	class Triangle : public Shape {
+	public:
+		// Triangle Public Methods
+		Triangle(const Transform &ObjectToWorld, const Transform &WorldToObject,
+			bool reverseOrientation, const std::shared_ptr<TriangleMesh> &mesh,
+			int triNumber)
+			: Shape(ObjectToWorld, WorldToObject, reverseOrientation), mesh(mesh)
+		{
+			v = &mesh->vertexIndices[3 * triNumber];
+			triMeshBytes += sizeof(*this);
+		}
+		// Bounds3f ObjectBound() const;
+		// Bounds3f WorldBound() const;
+		bool Intersect(const Ray &ray, Float *tHit, SurfaceInteraction *isect, bool testAlphaTexture) const
+		{
+
+		}
+		bool IntersectP(const Ray &ray, bool testAlphaTexture) const
+		{
+
+		}
+		Float Area() const
+		{
+
+		}
+		Interaction Sample(const Point2f &u) const
+		{
+
+		}
+
+	private:
+		// Triangle Private Methods
+		void GetUVs(Point2f uv[3]) const {
+			if (mesh->uv) {
+				uv[0] = mesh->uv[v[0]];
+				uv[1] = mesh->uv[v[1]];
+				uv[2] = mesh->uv[v[2]];
+			}
+			else {
+				uv[0] = Point2f(0, 0);
+				uv[1] = Point2f(1, 0);
+				uv[2] = Point2f(1, 1);
+			}
+		}
+
+		// Triangle Private Data
+		std::shared_ptr<TriangleMesh> mesh;
+		const int *v;
+	};
+	*/
+
+    
 
 }
 
